@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NYSM Platform Architecture</title>
+    <title>Cloud-Native Architecture Flow</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -11,20 +11,22 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#2563eb',
-                        secondary: '#1d4ed8',
-                        accent: '#0ea5e9',
-                        dark: '#1e293b',
-                        light: '#f1f5f9',
-                        ai: '#f59e0b',
-                        data: '#4b5563',
-                        auth: '#10b981',
-                        profile: '#8b5cf6',
-                        vcv: '#ef4444',
-                        job: '#6366f1',
-                        search: '#ec4899',
-                        notification: '#0d9488',
-                        verification: '#f97316'
+                        primary: '#4F46E5',
+                        secondary: '#06B6D4',
+                        accent: '#10B981',
+                        dark: '#1E293B',
+                        light: '#F8FAFC',
+                        frontend: '#EC4899',
+                        auth: '#F59E0B',
+                        profile: '#06B6D4',
+                        vcv: '#EF4444',
+                        ai: '#8B5CF6',
+                        job: '#10B981',
+                        data: '#64748B',
+                        node: '#68A063',
+                        python: '#3572A5',
+                        aws: '#FF9900',
+                        postgres: '#336791'
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -50,37 +52,74 @@
             background-attachment: fixed;
         }
         
-        .architecture-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(4, 1fr);
-            gap: 1rem;
-            height: 600px;
+        .architecture-container {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
         
-        .component-card {
-            transition: all 0.3s ease;
+        .architecture-layer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .architecture-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
             cursor: pointer;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            padding: 15px;
+            z-index: 3;
             position: relative;
         }
         
-        .component-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+        .architecture-node:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            z-index: 10;
         }
         
-        .component-card::after {
-            content: '';
+        .connection {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+            height: 60px;
+            width: 4px;
+            background: #4F46E5;
             z-index: 1;
+        }
+        
+        .horizontal-connection {
+            position: absolute;
+            height: 4px;
+            background: #4F46E5;
+            z-index: 1;
+        }
+        
+        .flow-arrow {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #4F46E5;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            z-index: 2;
         }
         
         .modal {
@@ -103,45 +142,6 @@
             font-weight: 500;
         }
         
-        .architecture-diagram {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            border-radius: 16px;
-            position: relative;
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
-        }
-        
-        .timeline-item {
-            position: relative;
-            padding-left: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .timeline-item:before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 5px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #2563eb;
-            z-index: 2;
-        }
-        
-        .timeline-item:after {
-            content: '';
-            position: absolute;
-            left: 7px;
-            top: 25px;
-            width: 2px;
-            height: calc(100% - 10px);
-            background: #cbd5e1;
-        }
-        
-        .timeline-item:last-child:after {
-            display: none;
-        }
-        
         .tech-card {
             transition: all 0.3s ease;
             border-radius: 12px;
@@ -158,11 +158,6 @@
             overflow-y: auto;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
         .fade-in {
             animation: fadeIn 0.6s ease forwards;
         }
@@ -171,314 +166,243 @@
             animation: pulse-slow 4s infinite;
         }
         
-        .glow {
-            box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
         }
         
-        @media (max-width: 1024px) {
-            .architecture-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: auto;
-                height: auto;
-            }
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
         
-        @media (max-width: 768px) {
-            .architecture-grid {
-                grid-template-columns: 1fr;
-            }
+        .tech-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 24px;
         }
         
-        .diagram-line {
-            position: absolute;
-            background: #2563eb;
-            z-index: 1;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        .line-1 {
-            top: 25%;
-            left: 25%;
-            width: 50%;
-            height: 2px;
+        .ai-tool-card {
+            background: linear-gradient(to bottom right, #F0F9FF, #E0F2FE);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #DBEAFE;
+        }
+
+        .ai-development-section {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f9fafb;
+            border-left: 4px solid #4F46E5;
         }
         
-        .line-2 {
-            top: 50%;
-            left: 25%;
-            width: 50%;
-            height: 2px;
+        .ai-tip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
         }
         
-        .line-3 {
-            top: 75%;
-            left: 25%;
-            width: 50%;
-            height: 2px;
+        .ai-tip i {
+            color: #4F46E5;
+            font-size: 1.2rem;
         }
         
-        .connector-dot {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #2563eb;
-            z-index: 2;
+        .tech-detail-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .feature-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .use-case {
+            display: flex;
+            align-items: flex-start;
+            margin: 10px 0;
+            gap: 10px;
+        }
+        
+        .use-case i {
+            color: #4F46E5;
+            margin-top: 4px;
+        }
+        
+        .tech-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .diagram-container {
+            position: relative;
+            min-height: 1000px; /* Adjust height based on content */
         }
     </style>
 </head>
 <body class="bg-gradient-to-b from-blue-50 to-indigo-50 text-dark">
     <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+    <header class="bg-gradient-to-r from-primary to-secondary text-white py-3 sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 flex justify-between items-center">
             <div class="flex items-center">
-                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3 glow">
-                    <i class="fas fa-brain text-white text-xl"></i>
+                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center mr-3">
+                    <i class="fas fa-project-diagram text-primary text-xl"></i>
                 </div>
-                <h1 class="text-2xl font-bold text-primary">NYSM Architecture</h1>
+                <h1 class="text-2xl font-bold">Cloud-Native Architecture Flow</h1>
             </div>
             
-            <nav class="hidden md:block">
-                <ul class="flex space-x-8">
-                    <li><a href="#overview" class="text-gray-700 hover:text-primary font-medium transition-colors">Overview</a></li>
-                    <li><a href="#architecture" class="text-gray-700 hover:text-primary font-medium transition-colors">Architecture</a></li>
-                    <li><a href="#tech" class="text-gray-700 hover:text-primary font-medium transition-colors">Tech Stack</a></li>
-                    <li><a href="#roadmap" class="text-gray-700 hover:text-primary font-medium transition-colors">Roadmap</a></li>
-                </ul>
+            <nav class="flex space-x-2">
+                <a href="#overview" class="nav-btn">Overview</a>
+                <a href="#architecture" class="nav-btn">Architecture</a>
+                <a href="#tech" class="nav-btn">Tech Stack</a>
             </nav>
-            
-            <div>
-                <button class="bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-secondary transition mr-3">
-                    <i class="fas fa-download mr-2"></i> Docs
-                </button>
-                <button class="bg-white border border-primary text-primary px-4 py-2 rounded-lg font-medium hover:bg-blue-50 transition">
-                    <i class="fas fa-play-circle mr-2"></i> Demo
-                </button>
-            </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-primary to-secondary text-white py-20">
+    <section id="overview" class="bg-gradient-to-r from-primary to-secondary text-white py-16">
         <div class="container mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4 fade-in">NYSM Platform Architecture</h1>
-            <p class="text-xl max-w-3xl mx-auto mb-8 fade-in" style="animation-delay: 0.2s">Cloud-native microservices architecture with AI-powered features for next-generation recruitment</p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4 fade-in" style="animation-delay: 0.4s">
-                <button class="bg-white text-primary px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition shadow-lg hover:shadow-xl">
-                    <i class="fas fa-file-pdf mr-2"></i> Download Blueprint
-                </button>
-                <button class="bg-transparent border-2 border-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:bg-opacity-10 transition">
-                    <i class="fas fa-video mr-2"></i> Platform Demo
-                </button>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Cloud-Native Architecture Flow</h1>
+            <div class="max-w-3xl mx-auto bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                <p class="text-lg mb-4">Visualizing the flow of requests through our cloud-native microservices architecture</p>
+                <p class="text-lg">Click on any component to see detailed information</p>
             </div>
         </div>
     </section>
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-12 max-w-7xl">
-        <!-- Overview Section -->
-        <section id="overview" class="mb-20 bg-white rounded-2xl shadow-xl p-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-4">Platform Overview</h2>
-                <div class="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">A modern, AI-driven recruitment platform built with cloud-native technologies and microservices architecture</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
-                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                        <i class="fas fa-user text-primary text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Job Seeker Experience</h3>
-                    <p class="text-gray-600 mb-4">AI-guided video CV creation, personalized career coaching, and smart job matching for candidates.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-blue-100 text-blue-800">AI Analysis</span>
-                        <span class="tech-badge bg-blue-100 text-blue-800">Video Processing</span>
-                        <span class="tech-badge bg-blue-100 text-blue-800">Personalization</span>
-                    </div>
-                </div>
-                
-                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
-                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                        <i class="fas fa-building text-primary text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Employer Portal</h3>
-                    <p class="text-gray-600 mb-4">AI-powered candidate search, video assessment tools, and streamlined hiring workflows for recruiters.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-blue-100 text-blue-800">Smart Search</span>
-                        <span class="tech-badge bg-blue-100 text-blue-800">Analytics</span>
-                        <span class="tech-badge bg-blue-100 text-blue-800">Workflow</span>
-                    </div>
-                </div>
-                
-                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
-                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                        <i class="fas fa-cogs text-primary text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Admin & Operations</h3>
-                    <p class="text-gray-600 mb-4">Real-time analytics, automated moderation, and comprehensive platform management tools.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-blue-100 text-blue-800">Monitoring</span>
-                        <span class="tech-badge bg-blue-100 text-blue-800">Security</span>
-                        <span class="tech-badge bg-blue-100 text-blue-800">Automation</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-200">
-                <h3 class="text-2xl font-bold text-center mb-6 text-primary">Architecture Principles</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="bg-white p-6 rounded-xl text-center border border-blue-100 hover:shadow-lg transition">
-                        <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-cubes text-primary text-2xl"></i>
-                        </div>
-                        <h4 class="font-bold text-lg mb-2">Microservices</h4>
-                        <p class="text-gray-600">Independent, scalable services with well-defined APIs</p>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-xl text-center border border-blue-100 hover:shadow-lg transition">
-                        <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-cloud text-primary text-2xl"></i>
-                        </div>
-                        <h4 class="font-bold text-lg mb-2">Cloud-Native</h4>
-                        <p class="text-gray-600">Designed for AWS with auto-scaling and resilience</p>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-xl text-center border border-blue-100 hover:shadow-lg transition">
-                        <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-lock text-primary text-2xl"></i>
-                        </div>
-                        <h4 class="font-bold text-lg mb-2">Secure</h4>
-                        <p class="text-gray-600">Zero-trust architecture with end-to-end encryption</p>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-xl text-center border border-blue-100 hover:shadow-lg transition">
-                        <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-brain text-primary text-2xl"></i>
-                        </div>
-                        <h4 class="font-bold text-lg mb-2">AI-Powered</h4>
-                        <p class="text-gray-600">AI integration at every layer for intelligent features</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Architecture Diagram -->
+        <!-- Architecture Flow Diagram -->
         <section id="architecture" class="mb-20">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-4">System Architecture</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Click on any component to explore its implementation details and technologies</p>
+                <h2 class="text-3xl font-bold mb-4">Architecture Flow</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Clear visualization of request flow through microservices</p>
                 <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
             </div>
             
-            <div class="architecture-diagram p-4 md:p-8 mb-12 relative">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl font-bold text-primary">Cloud-Native Microservices Architecture</h3>
+            <div class="architecture-container diagram-container">
+                <!-- User Layer -->
+                <div class="architecture-layer">
+                    <div class="architecture-node bg-gray-600" onclick="openModal('user-modal')">
+                        <i class="fas fa-user text-3xl mb-2"></i>
+                        <div>End User</div>
+                    </div>
                 </div>
                 
-                <div class="architecture-grid">
-                    <!-- Row 1: Frontend -->
-                    <div class="component-card bg-white col-span-4" onclick="openModal('frontend-modal')">
-                        <div class="bg-primary text-white p-4">
-                            <h4 class="font-bold text-center"><i class="fas fa-desktop mr-2"></i> Frontend Layer</h4>
-                        </div>
-                        <div class="p-4">
-                            <div class="flex flex-wrap justify-center gap-2">
-                                <span class="tech-badge bg-blue-100 text-blue-800">React</span>
-                                <span class="tech-badge bg-blue-100 text-blue-800">React Native</span>
-                                <span class="tech-badge bg-blue-100 text-blue-800">Tailwind CSS</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Row 2: Services -->
-                    <div class="component-card bg-white" onclick="openModal('auth-modal')">
-                        <div class="bg-green-600 text-white p-3">
-                            <h4 class="font-bold text-sm"><i class="fas fa-user-lock mr-1"></i> Auth Service</h4>
-                        </div>
-                        <div class="p-2 text-center">
-                            <span class="tech-badge bg-green-100 text-green-800">Node.js</span>
-                        </div>
-                    </div>
-                    
-                    <div class="component-card bg-white" onclick="openModal('profile-modal')">
-                        <div class="bg-purple-600 text-white p-3">
-                            <h4 class="font-bold text-sm"><i class="fas fa-user mr-1"></i> Profile Service</h4>
-                        </div>
-                        <div class="p-2 text-center">
-                            <span class="tech-badge bg-purple-100 text-purple-800">Python</span>
-                        </div>
-                    </div>
-                    
-                    <div class="component-card bg-white" onclick="openModal('vvc-modal')">
-                        <div class="bg-red-600 text-white p-3">
-                            <h4 class="font-bold text-sm"><i class="fas fa-video mr-1"></i> VCV Service</h4>
-                        </div>
-                        <div class="p-2 text-center">
-                            <span class="tech-badge bg-red-100 text-red-800">Go</span>
-                        </div>
-                    </div>
-                    
-                    <div class="component-card bg-white" onclick="openModal('ai-modal')">
-                        <div class="bg-yellow-600 text-white p-3">
-                            <h4 class="font-bold text-sm"><i class="fas fa-robot mr-1"></i> AI Engine</h4>
-                        </div>
-                        <div class="p-2 text-center">
-                            <span class="tech-badge bg-yellow-100 text-yellow-800">TensorFlow</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Row 3: Services -->
-                    <div class="component-card bg-white" onclick="openModal('job-modal')">
-                        <div class="bg-indigo-600 text-white p-3">
-                            <h4 class="font-bold text-sm"><i class="fas fa-briefcase mr-1"></i> Job Service</h4>
-                        </div>
-                        <div class="p-2 text-center">
-                            <span class="tech-badge bg-indigo-100 text-indigo-800">Java</span>
-                        </div>
-                    </div>
-                    
-                    <div class="component-card bg-white" onclick="openModal('search-modal')">
-                        <div class="bg-pink-600 text-white p-3">
-                            <h4 class="font-bold text-sm"><i class="fas fa-search mr-1"></i> Search Service</h4>
-                        </div>
-                        <div class="p-2 text-center">
-                            <span class="tech-badge bg-pink-100 text-pink-800">ElasticSearch</span>
-                        </div>
-                    </div>
-                    
-                    <div class="component-card bg-white" onclick="openModal('notification-modal')">
-                        <div class="bg-teal-600 text-white p-3">
-                            <h4 class="font-bold text-sm"><i class="fas fa-bell mr-1"></i> Notification</h4>
-                        </div>
-                        <div class="p-2 text-center">
-                            <span class="tech-badge bg-teal-100 text-teal-800">Node.js</span>
-                        </div>
-                    </div>
-                    
-                    <div class="component-card bg-white" onclick="openModal('verification-modal')">
-                        <div class="bg-orange-600 text-white p-3">
-                            <h4 class="font-bold text-sm"><i class="fas fa-shield-alt mr-1"></i> Verification</h4>
-                        </div>
-                        <div class="p-2 text-center">
-                            <span class="tech-badge bg-orange-100 text-orange-800">.NET</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Row 4: Data Layer -->
-                    <div class="component-card bg-white col-span-4" onclick="openModal('data-modal')">
-                        <div class="bg-gray-800 text-white p-4">
-                            <h4 class="font-bold text-center"><i class="fas fa-database mr-2"></i> Data Layer</h4>
-                        </div>
-                        <div class="p-4">
-                            <div class="flex flex-wrap justify-center gap-2">
-                                <span class="tech-badge bg-gray-200 text-gray-800">PostgreSQL</span>
-                                <span class="tech-badge bg-gray-200 text-gray-800">MongoDB</span>
-                                <span class="tech-badge bg-gray-200 text-gray-800">S3</span>
-                                <span class="tech-badge bg-gray-200 text-gray-800">Redis</span>
-                            </div>
-                        </div>
+                <!-- Connection: User to Frontend -->
+                <div class="connection" style="top: 150px; left: 50%; transform: translateX(-50%);"></div>
+                <div class="flow-arrow" style="top: 210px; left: 50%; transform: translateX(-50%);"></div>
+                
+                <!-- Frontend Layer -->
+                <div class="architecture-layer">
+                    <div class="architecture-node bg-frontend" onclick="openModal('frontend-modal')">
+                        <i class="fas fa-desktop text-3xl mb-2"></i>
+                        <div>Frontend UI</div>
                     </div>
                 </div>
+                
+                <!-- Connection: Frontend to API Gateway -->
+                <div class="connection" style="top: 360px; left: 50%; transform: translateX(-50%);"></div>
+                <div class="flow-arrow" style="top: 420px; left: 50%; transform: translateX(-50%);"></div>
+                
+                <!-- API Gateway Layer -->
+                <div class="architecture-layer">
+                    <div class="architecture-node bg-purple-600" onclick="openModal('gateway-modal')">
+                        <i class="fas fa-network-wired text-3xl mb-2"></i>
+                        <div>API Gateway</div>
+                    </div>
+                </div>
+                
+                <!-- Connection: API Gateway to Microservices -->
+                <div class="horizontal-connection" style="top: 520px; left: 25%; width: 50%;"></div>
+                <div class="connection" style="top: 520px; left: 50%; transform: translateX(-50%); height: 80px;"></div>
+                <div class="flow-arrow" style="top: 590px; left: 50%; transform: translateX(-50%);"></div>
+
+                
+                <!-- Microservices Layer -->
+                <div class="architecture-layer flex-wrap gap-8" style="margin-top: 80px;">
+                    <div class="architecture-node bg-auth" onclick="openModal('auth-modal')">
+                        <i class="fas fa-user-lock text-3xl mb-2"></i>
+                        <div>Auth Service</div>
+                    </div>
+                    
+                    <div class="architecture-node bg-profile" onclick="openModal('profile-modal')">
+                        <i class="fas fa-id-card text-3xl mb-2"></i>
+                        <div>Profile Service</div>
+                    </div>
+                    
+                    <div class="architecture-node bg-vcv" onclick="openModal('vcv-modal')">
+                        <i class="fas fa-video text-3xl mb-2"></i>
+                        <div>Video CV Service</div>
+                    </div>
+                </div>
+                
+                <div class="architecture-layer flex-wrap gap-8" style="margin-top: 20px;">
+                    <div class="architecture-node bg-ai" onclick="openModal('ai-modal')">
+                        <i class="fas fa-robot text-3xl mb-2"></i>
+                        <div>AI Engine</div>
+                    </div>
+                    
+                    <div class="architecture-node bg-job" onclick="openModal('job-modal')">
+                        <i class="fas fa-briefcase text-3xl mb-2"></i>
+                        <div>Job Service</div>
+                    </div>
+                </div>
+                
+                <!-- Connection: Microservices to Data Layer -->
+                <div class="connection" style="top: 880px; left: 50%; transform: translateX(-50%); height: 100px;"></div>
+                <div class="flow-arrow" style="top: 980px; left: 50%; transform: translateX(-50%);"></div>
+                
+                <!-- Data Layer -->
+                <div class="architecture-layer">
+                    <div class="architecture-node bg-data" onclick="openModal('data-modal')">
+                        <i class="fas fa-database text-3xl mb-2"></i>
+                        <div>Data Layer</div>
+                    </div>
+                </div>
+                
+                <!-- Decorative background elements -->
+                <div class="absolute inset-0 z-0 opacity-10">
+                    <div class="absolute top-1/4 left-1/4 w-40 h-40 rounded-full bg-blue-400 animate-float"></div>
+                    <div class="absolute top-1/3 right-1/4 w-32 h-32 rounded-full bg-purple-400 animate-float" style="animation-delay: 2s;"></div>
+                    <div class="absolute bottom-1/4 left-1/3 w-36 h-36 rounded-full bg-indigo-400 animate-float" style="animation-delay: 4s;"></div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center text-gray-600">
+                <p>Visualization shows the flow of requests from users through the system to data storage</p>
             </div>
         </section>
 
@@ -487,154 +411,70 @@
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold mb-4">Technology Stack</h2>
                 <div class="w-20 h-1 bg-primary mx-auto rounded-full"></div>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Click on any technology to see detailed implementation</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
-                    <h3 class="text-xl font-bold mb-4 text-primary">Frontend</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>React.js & Next.js</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>React Native</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>Tailwind CSS</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>WebRTC for video</span>
-                        </li>
-                    </ul>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <!-- React -->
+                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100 text-center cursor-pointer" onclick="openModal('react-modal')">
+                    <div class="tech-logo bg-blue-100 text-blue-800">
+                        <i class="fab fa-react"></i>
+                    </div>
+                    <h4 class="font-bold">React</h4>
+                    <div class="text-xs text-gray-500 mt-1">Frontend</div>
                 </div>
                 
-                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
-                    <h3 class="text-xl font-bold mb-4 text-primary">Backend</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>Node.js & Python</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>Express & FastAPI</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>Kubernetes</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>Docker Containers</span>
-                        </li>
-                    </ul>
+                <!-- Node.js -->
+                <div class="tech-card bg-gradient-to-br from-green-50 to-white p-6 rounded-xl border border-green-100 text-center cursor-pointer" onclick="openModal('node-modal')">
+                    <div class="tech-logo bg-green-100 text-green-800">
+                        <i class="fab fa-node-js"></i>
+                    </div>
+                    <h4 class="font-bold">Node.js</h4>
+                    <div class="text-xs text-gray-500 mt-1">Backend</div>
                 </div>
                 
-                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
-                    <h3 class="text-xl font-bold mb-4 text-primary">AI/ML</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>TensorFlow & PyTorch</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>OpenAI GPT-4</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>AWS Rekognition</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>Hugging Face Transformers</span>
-                        </li>
-                    </ul>
+                <!-- Python -->
+                <div class="tech-card bg-gradient-to-br from-yellow-50 to-white p-6 rounded-xl border border-yellow-100 text-center cursor-pointer" onclick="openModal('python-modal')">
+                    <div class="tech-logo bg-yellow-100 text-yellow-800">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <h4 class="font-bold">Python</h4>
+                    <div class="text-xs text-gray-500 mt-1">AI/ML</div>
                 </div>
                 
-                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
-                    <h3 class="text-xl font-bold mb-4 text-primary">Data & Infra</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>PostgreSQL & MongoDB</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>AWS S3 & CloudFront</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>ElasticSearch</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                            <span>Terraform & GitHub Actions</span>
-                        </li>
-                    </ul>
+                <!-- TensorFlow -->
+                <div class="tech-card bg-gradient-to-br from-orange-50 to-white p-6 rounded-xl border border-orange-100 text-center cursor-pointer" onclick="openModal('tensorflow-modal')">
+                    <div class="tech-logo bg-orange-100 text-orange-800">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h4 class="font-bold">TensorFlow</h4>
+                    <div class="text-xs text-gray-500 mt-1">AI Engine</div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Roadmap Section -->
-        <section id="roadmap" class="mb-20 bg-white rounded-2xl shadow-xl p-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-4">Implementation Roadmap</h2>
-                <div class="w-20 h-1 bg-primary mx-auto rounded-full"></div>
+                
+                <!-- AWS -->
+                <div class="tech-card bg-gradient-to-br from-gray-50 to-white p-6 rounded-xl border border-gray-100 text-center cursor-pointer" onclick="openModal('aws-modal')">
+                    <div class="tech-logo bg-gray-100 text-gray-800">
+                        <i class="fab fa-aws"></i>
+                    </div>
+                    <h4 class="font-bold">AWS</h4>
+                    <div class="text-xs text-gray-500 mt-1">Cloud</div>
+                </div>
+                
+                <!-- PostgreSQL -->
+                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100 text-center cursor-pointer" onclick="openModal('postgres-modal')">
+                    <div class="tech-logo bg-blue-100 text-blue-800">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4 class="font-bold">PostgreSQL</h4>
+                    <div class="text-xs text-gray-500 mt-1">Database</div>
+                </div>
             </div>
             
-            <div class="max-w-4xl mx-auto">
-                <div class="timeline-item">
-                    <div class="bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl border border-blue-100">
-                        <div class="text-primary font-bold mb-2 text-lg">Phase 1: Foundation (Months 1-3)</div>
-                        <ul class="list-disc pl-5 text-gray-600">
-                            <li>Containerize existing MVP with Docker</li>
-                            <li>Implement Auth and Profile microservices</li>
-                            <li>Set up CI/CD pipeline with GitHub Actions</li>
-                            <li>Deploy to AWS EKS cluster</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl border border-blue-100">
-                        <div class="text-primary font-bold mb-2 text-lg">Phase 2: AI Integration (Months 4-6)</div>
-                        <ul class="list-disc pl-5 text-gray-600">
-                            <li>Build resume parser with NLP extraction</li>
-                            <li>Implement VCV scoring with computer vision</li>
-                            <li>Develop AI career coach using GPT-4</li>
-                            <li>Integrate semantic search with ElasticSearch</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl border border-blue-100">
-                        <div class="text-primary font-bold mb-2 text-lg">Phase 3: Advanced Features (Months 7-9)</div>
-                        <ul class="list-disc pl-5 text-gray-600">
-                            <li>Blockchain credential verification</li>
-                            <li>Real-time chat and notifications</li>
-                            <li>ATS/HRIS integrations</li>
-                            <li>Predictive analytics dashboard</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl border border-blue-100">
-                        <div class="text-primary font-bold mb-2 text-lg">Phase 4: Optimization & Scaling (Months 10-12)</div>
-                        <ul class="list-disc pl-5 text-gray-600">
-                            <li>Performance optimization</li>
-                            <li>Auto-scaling implementation</li>
-                            <li>Multi-region deployment</li>
-                            <li>Security hardening</li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="mt-12 text-center">
+                <p class="text-gray-600 max-w-3xl mx-auto">
+                    Our technology stack leverages modern frameworks and cloud-native services to create a scalable, 
+                    resilient architecture. Each component plays a critical role in delivering a seamless experience.
+                </p>
             </div>
         </section>
     </main>
@@ -644,8 +484,8 @@
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-xl font-bold mb-4">NYSM Platform</h3>
-                    <p class="text-blue-100">Next-generation recruitment platform powered by AI and cloud-native architecture.</p>
+                    <h3 class="text-xl font-bold mb-4">Cloud-Native Flow</h3>
+                    <p class="text-blue-100">Visualizing microservices architecture flow</p>
                 </div>
                 
                 <div>
@@ -654,17 +494,15 @@
                         <li><a href="#overview" class="text-blue-100 hover:text-white transition-colors">Overview</a></li>
                         <li><a href="#architecture" class="text-blue-100 hover:text-white transition-colors">Architecture</a></li>
                         <li><a href="#tech" class="text-blue-100 hover:text-white transition-colors">Tech Stack</a></li>
-                        <li><a href="#roadmap" class="text-blue-100 hover:text-white transition-colors">Roadmap</a></li>
                     </ul>
                 </div>
                 
                 <div>
                     <h4 class="font-bold mb-4">Resources</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-blue-100 hover:text-white transition-colors">Developer Portal</a></li>
-                        <li><a href="#" class="text-blue-100 hover:text-white transition-colors">API Documentation</a></li>
-                        <li><a href="#" class="text-blue-100 hover:text-white transition-colors">System Status</a></li>
-                        <li><a href="#" class="text-blue-100 hover:text-white transition-colors">Security</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition-colors">API Reference</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition-colors">Tutorials</a></li>
                     </ul>
                 </div>
                 
@@ -673,7 +511,7 @@
                     <ul class="space-y-2">
                         <li class="flex items-center">
                             <i class="fas fa-envelope text-blue-100 mr-2"></i>
-                            <span>info@nysm-platform.com</span>
+                            <span>info@cloudflow.com</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-phone text-blue-100 mr-2"></i>
@@ -681,946 +519,762 @@
                         </li>
                         <li class="flex items-center">
                             <i class="fab fa-github text-blue-100 mr-2"></i>
-                            <span>github.com/nysm-platform</span>
+                            <span>github.com/cloud-flow</span>
                         </li>
                     </ul>
                 </div>
             </div>
             
             <div class="border-t border-blue-300 mt-8 pt-8 text-center text-blue-100">
-                <p>&copy; 2023 NYSM Platform. All rights reserved.</p>
+                <p>&copy; 2023 Cloud-Native Architecture Flow. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Component Modals -->
-    <!-- Frontend Layer Modal -->
+    <!-- MODALS SECTION -->
+    
+    <!-- Architecture Component Modals -->
+    <div id="user-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center"><i class="fas fa-user text-gray-600 text-3xl mr-3"></i><h3 class="text-2xl font-bold text-gray-600">End User</h3></div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-2xl"></i></button>
+                </div>
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">How It Operates</h4>
+                    <p class="text-gray-700 mb-3">The End User is the person interacting with the application through a web browser or mobile app. They initiate requests, consume data, and drive the entire workflow by performing actions like logging in, searching for jobs, or uploading a video CV.</p>
+                    <h4 class="font-bold mb-2">Technology Used</h4>
+                    <p class="text-gray-700 mb-3">Users interact via standard web technologies. The platform must be compatible with major <strong>Web Browsers</strong> (Chrome, Firefox, Safari) and potentially <strong>Mobile Operating Systems</strong> (iOS, Android) if a native app exists.</p>
+                </div>
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI in User Experience</h4>
+                    <div class="ai-tip"><i class="fas fa-chart-pie"></i><div><strong>User Behavior Analytics:</strong> Tools like Hotjar or Mixpanel use AI to analyze session recordings and heatmaps, providing insights into user engagement and identifying UX friction points.</div></div>
+                    <div class="ai-tip"><i class="fas fa-tasks"></i><div><strong>Personalization:</strong> AI algorithms can tailor the user experience, showing relevant jobs or content based on the user's interaction history, leading to higher engagement.</div></div>
+                </div>
+                <div class="flex justify-end mt-4"><button onclick="closeModal()" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">Close</button></div>
+            </div>
+        </div>
+    </div>
+
     <div id="frontend-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
-            <div class="p-6">
+             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-primary">Frontend Layer</h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
+                    <div class="flex items-center"><i class="fas fa-desktop text-frontend text-3xl mr-3"></i><h3 class="text-2xl font-bold text-frontend">Frontend UI</h3></div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-2xl"></i></button>
                 </div>
-                
-                <div class="mb-6 p-4 bg-blue-50 rounded-lg">
-                    <h4 class="font-bold mb-2">Tech Stack:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-blue-100 text-blue-800">React</span>
-                        <span class="tech-badge bg-blue-100 text-blue-800">React Native</span>
-                        <span class="tech-badge bg-blue-100 text-blue-800">Tailwind CSS</span>
-                        <span class="tech-badge bg-blue-100 text-blue-800">Redux</span>
-                        <span class="tech-badge bg-blue-100 text-blue-800">WebRTC</span>
-                    </div>
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">How It Operates</h4>
+                    <p class="text-gray-700 mb-3">The Frontend is a single-page application (SPA) that runs in the user's browser. It fetches data from the API Gateway, manages the UI state, and provides a dynamic, responsive experience. It's the visual and interactive layer of the entire system.</p>
+                    <h4 class="font-bold mb-2">Technology Used</h4>
+                    <p class="text-gray-700 mb-3">Built with <strong>React</strong> for component-based UI, <strong>TypeScript</strong> for type safety, <strong>Redux Toolkit</strong> for predictable state management, and <strong>Tailwind CSS</strong> for rapid, utility-first styling. <strong>Axios</strong> is used for making API requests.</p>
                 </div>
-                
-                <h4 class="font-bold mb-2">Implementation Details:</h4>
-                <p class="mb-4 text-gray-700">
-                    The frontend layer is built using React for web applications and React Native for mobile. 
-                    We use a component-based architecture for maximum reusability. The UI is responsive and 
-                    accessible following WCAG 2.1 guidelines.
-                </p>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Key Features:</h4>
-                    <ul class="space-y-2 mb-4">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Responsive design for all device sizes</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Real-time video processing with WebRTC</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>State management with Redux Toolkit</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Internationalization support</span>
-                        </li>
-                    </ul>
-                    
-                    <h5 class="font-bold text-primary mb-2">AI Integration:</h5>
-                    <p class="text-gray-700 mb-3">
-                        Using TensorFlow.js for real-time feedback during video CV recording:
-                    </p>
-                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
-// Sample code for AI video feedback
-const analyzeVideo = (videoStream) => {
-    const faceDetector = new FaceDetector();
-    const emotionModel = loadEmotionRecognitionModel();
-    
-    setInterval(() => {
-        const frame = captureFrame(videoStream);
-        const faces = faceDetector.detect(frame);
-        
-        if(faces.length > 0) {
-            const emotion = emotionModel.predict(faces[0]);
-            const feedback = generateFeedback(emotion);
-            updateUI(feedback);
-        }
-    }, 1000);
-};</pre>
+                 <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip"><i class="fas fa-code"></i><div><strong>Component Generation:</strong> Use GitHub Copilot or v0.dev to generate React components from a text prompt, complete with props, state, and styling.</div></div>
+                    <div class="ai-tip"><i class="fas fa-bug"></i><div><strong>Automated Testing:</strong> Tools like Functionize or Applitools use AI to create, execute, and maintain end-to-end tests, including visual regression testing.</div></div>
                 </div>
-                
-                <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
-                </div>
+                <div class="flex justify-end mt-4"><button onclick="closeModal()" class="bg-frontend text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition">Close</button></div>
             </div>
         </div>
     </div>
 
-    <!-- AI Engine Modal -->
-    <div id="ai-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div id="gateway-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-ai">AI Engine</h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
+                    <div class="flex items-center"><i class="fas fa-network-wired text-purple-600 text-3xl mr-3"></i><h3 class="text-2xl font-bold text-purple-600">API Gateway</h3></div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-2xl"></i></button>
                 </div>
-                
-                <div class="mb-6 p-4 bg-yellow-50 rounded-lg">
-                    <h4 class="font-bold mb-2">Tech Stack:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-yellow-100 text-yellow-800">Python</span>
-                        <span class="tech-badge bg-yellow-100 text-yellow-800">TensorFlow</span>
-                        <span class="tech-badge bg-yellow-100 text-yellow-800">PyTorch</span>
-                        <span class="tech-badge bg-yellow-100 text-yellow-800">OpenAI API</span>
-                        <span class="tech-badge bg-yellow-100 text-yellow-800">Hugging Face</span>
-                    </div>
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">How It Operates</h4>
+                    <p class="text-gray-700 mb-3">The API Gateway acts as a reverse proxy and the single entry point for all incoming requests from the frontend. It is responsible for request routing to the appropriate microservice, centralizing concerns like authentication, rate limiting, and request logging.</p>
+                    <h4 class="font-bold mb-2">Technology Used</h4>
+                    <p class="text-gray-700 mb-3">Typically implemented using a managed cloud service like <strong>AWS API Gateway</strong>. Alternatives include open-source solutions like <strong>Kong</strong> or <strong>Tyk</strong>, or building a custom gateway with Node.js and libraries like <strong>Express Gateway</strong>.</p>
                 </div>
-                
-                <h4 class="font-bold mb-2">Implementation Details:</h4>
-                <p class="mb-4 text-gray-700">
-                    The AI Engine is the core intelligence of the platform, providing multiple AI-powered features 
-                    through microservices. It's built with TensorFlow and PyTorch for custom models, and integrates 
-                    with OpenAI for natural language processing.
-                </p>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Key AI Features:</h4>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Resume Parsing & Summarization</h5>
-                                <p class="text-gray-600">NLP models extract and summarize key information from resumes using spaCy and custom transformers</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Video CV Analysis</h5>
-                                <p class="text-gray-600">Computer vision models analyze facial expressions, tone, and content using OpenCV and MediaPipe</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Smart Matching</h5>
-                                <p class="text-gray-600">Vector embeddings match candidates to jobs based on semantic similarity using BERT embeddings</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Career Copilot</h5>
-                                <p class="text-gray-600">GPT-4 powered chatbot for personalized career guidance with custom fine-tuning</p>
-                            </div>
-                        </li>
-                    </ul>
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip"><i class="fas fa-traffic-light"></i><div><strong>Anomaly Detection:</strong> AI-powered monitoring tools (e.g., Datadog, Dynatrace) can analyze gateway traffic to automatically detect unusual patterns, potential attacks, or performance degradation.</div></div>
+                    <div class="ai-tip"><i class="fas fa-file-alt"></i><div><strong>Configuration Generation:</strong> Use AI coding assistants to generate Infrastructure as Code (IaC) scripts (e.g., Terraform or CloudFormation) for provisioning and configuring the API Gateway and its routes.</div></div>
                 </div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Development Workflow:</h4>
-                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                        <div class="flex flex-wrap justify-between mb-4">
-                            <div class="text-center p-2 w-1/4">
-                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <i class="fas fa-database text-white"></i>
-                                </div>
-                                <p class="text-sm font-medium">Data Collection</p>
-                            </div>
-                            <div class="text-center p-2 w-1/4">
-                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <i class="fas fa-sliders-h text-white"></i>
-                                </div>
-                                <p class="text-sm font-medium">Model Training</p>
-                            </div>
-                            <div class="text-center p-2 w-1/4">
-                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <i class="fas fa-vial text-white"></i>
-                                </div>
-                                <p class="text-sm font-medium">Testing</p>
-                            </div>
-                            <div class="text-center p-2 w-1/4">
-                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <i class="fas fa-rocket text-white"></i>
-                                </div>
-                                <p class="text-sm font-medium">Deployment</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <h5 class="font-bold text-primary mb-2">Model Training Example:</h5>
-                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
-# Resume parsing model training
-import tensorflow as tf
-from transformers import BertTokenizer, TFBertForTokenClassification
-
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = TFBertForTokenClassification.from_pretrained('bert-base-uncased', num_labels=10)
-
-# Custom training loop
-for epoch in range(3):
-    for batch in train_dataset:
-        inputs = tokenizer(batch['text'], padding=True, truncation=True, return_tensors="tf")
-        with tf.GradientTape() as tape:
-            outputs = model(inputs)
-            loss = outputs.loss
-        gradients = tape.gradient(loss, model.trainable_variables)
-        optimizer.apply_gradients(zip(gradients, model.trainable_variables))</pre>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
-                </div>
+                <div class="flex justify-end mt-4"><button onclick="closeModal()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">Close</button></div>
             </div>
         </div>
     </div>
-
-    <!-- Profile Service Modal -->
-    <div id="profile-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-profile">Profile Service</h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-6 p-4 bg-purple-50 rounded-lg">
-                    <h4 class="font-bold mb-2">Tech Stack:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-purple-100 text-purple-800">Python</span>
-                        <span class="tech-badge bg-purple-100 text-purple-800">FastAPI</span>
-                        <span class="tech-badge bg-purple-100 text-purple-800">MongoDB</span>
-                        <span class="tech-badge bg-purple-100 text-purple-800">Redis</span>
-                    </div>
-                </div>
-                
-                <h4 class="font-bold mb-2">Implementation Details:</h4>
-                <p class="mb-4 text-gray-700">
-                    The Profile Service manages all user profile data including personal information, work history, 
-                    education, skills, and preferences. It uses MongoDB for flexible document storage and Redis for 
-                    caching frequently accessed profiles.
-                </p>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Key Features:</h4>
-                    <ul class="space-y-2 mb-4">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Profile creation and management API</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Skill tagging and verification system</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Privacy controls for profile visibility</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Profile completeness scoring</span>
-                        </li>
-                    </ul>
-                    
-                    <h5 class="font-bold text-primary mb-2">Profile Update Endpoint:</h5>
-                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
-# Profile update API endpoint
-@app.put("/profiles/{user_id}")
-async def update_profile(user_id: str, profile: ProfileUpdate):
-    # Validate input
-    if not validate_profile_data(profile):
-        raise HTTPException(status_code=400, detail="Invalid profile data")
     
-    # Update profile in MongoDB
-    result = db.profiles.update_one(
-        {"user_id": user_id},
-        {"$set": profile.dict(exclude_unset=True)}
-    )
-    
-    if result.modified_count == 0:
-        raise HTTPException(status_code=404, detail="Profile not found")
-    
-    # Invalidate cache
-    cache.delete(f"profile:{user_id}")
-    
-    return {"message": "Profile updated successfully"}</pre>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- VCV Service Modal -->
-    <div id="vvc-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-vcv">Video CV Service</h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-6 p-4 bg-red-50 rounded-lg">
-                    <h4 class="font-bold mb-2">Tech Stack:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-red-100 text-red-800">Go</span>
-                        <span class="tech-badge bg-red-100 text-red-800">gRPC</span>
-                        <span class="tech-badge bg-red-100 text-red-800">FFmpeg</span>
-                        <span class="tech-badge bg-red-100 text-red-800">AWS S3</span>
-                        <span class="tech-badge bg-red-100 text-red-800">OpenCV</span>
-                    </div>
-                </div>
-                
-                <h4 class="font-bold mb-2">Implementation Details:</h4>
-                <p class="mb-4 text-gray-700">
-                    The Video CV Service handles video recording, processing, storage, and streaming of video resumes. 
-                    It uses Go for high-performance video processing and gRPC for efficient communication with other services.
-                </p>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Key Features:</h4>
-                    <ul class="space-y-2 mb-4">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Real-time video recording with WebRTC integration</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Video compression and optimization</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Video segmentation for quick navigation</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Thumbnail generation and preview</span>
-                        </li>
-                    </ul>
-                    
-                    <h5 class="font-bold text-primary mb-2">Video Processing Pipeline:</h5>
-                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
-// Process video using FFmpeg
-func processVideo(inputPath string, outputPath string) error {
-    cmd := exec.Command("ffmpeg",
-        "-i", inputPath,
-        "-c:v", "libx264",
-        "-crf", "23",
-        "-preset", "medium",
-        "-c:a", "aac",
-        "-b:a", "128k",
-        "-movflags", "+faststart",
-        outputPath,
-    )
-    
-    var stderr bytes.Buffer
-    cmd.Stderr = &stderr
-    
-    if err := cmd.Run(); err != nil {
-        return fmt.Errorf("ffmpeg error: %v, %s", err, stderr.String())
-    }
-    return nil
-}
-
-// Generate thumbnails
-func generateThumbnails(videoPath string) ([]string, error) {
-    // Implementation using OpenCV
-}</pre>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Job Service Modal -->
-    <div id="job-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-job">Job Service</h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-6 p-4 bg-indigo-50 rounded-lg">
-                    <h4 class="font-bold mb-2">Tech Stack:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-indigo-100 text-indigo-800">Java</span>
-                        <span class="tech-badge bg-indigo-100 text-indigo-800">Spring Boot</span>
-                        <span class="tech-badge bg-indigo-100 text-indigo-800">PostgreSQL</span>
-                        <span class="tech-badge bg-indigo-100 text-indigo-800">RabbitMQ</span>
-                    </div>
-                </div>
-                
-                <h4 class="font-bold mb-2">Implementation Details:</h4>
-                <p class="mb-4 text-gray-700">
-                    The Job Service manages all aspects of job listings including creation, modification, publishing, 
-                    and expiration. It integrates with employer systems and provides rich APIs for job management.
-                </p>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Key Features:</h4>
-                    <ul class="space-y-2 mb-4">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Job creation wizard with templates</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Advanced job approval workflows</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Job recommendation engine integration</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Application tracking system</span>
-                        </li>
-                    </ul>
-                    
-                    <h5 class="font-bold text-primary mb-2">Job Creation API:</h5>
-                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
-// Create job endpoint
-@PostMapping("/jobs")
-public ResponseEntity<Job> createJob(@RequestBody JobRequest jobRequest) {
-    // Validate input
-    if (!jobValidator.isValid(jobRequest)) {
-        throw new InvalidJobException("Invalid job data");
-    }
-    
-    // Map to entity
-    Job job = jobMapper.toEntity(jobRequest);
-    
-    // Save to database
-    Job savedJob = jobRepository.save(job);
-    
-    // Publish job created event
-    eventPublisher.publishJobCreatedEvent(savedJob);
-    
-    return ResponseEntity
-            .created(URI.create("/jobs/" + savedJob.getId()))
-            .body(savedJob);
-}</pre>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Search Service Modal -->
-    <div id="search-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-search">Search Service</h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-6 p-4 bg-pink-50 rounded-lg">
-                    <h4 class="font-bold mb-2">Tech Stack:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-pink-100 text-pink-800">ElasticSearch</span>
-                        <span class="tech-badge bg-pink-100 text-pink-800">Python</span>
-                        <span class="tech-badge bg-pink-100 text-pink-800">FastAPI</span>
-                        <span class="tech-badge bg-pink-100 text-pink-800">Redis</span>
-                    </div>
-                </div>
-                
-                <h4 class="font-bold mb-2">Implementation Details:</h4>
-                <p class="mb-4 text-gray-700">
-                    The Search Service provides advanced search capabilities across candidates, jobs, and companies. 
-                    It uses ElasticSearch for full-text search with semantic understanding and relevance ranking.
-                </p>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Key Features:</h4>
-                    <ul class="space-y-2 mb-4">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Semantic search with NLP understanding</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Faceted search with filters</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Personalized search results</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Autocomplete and suggestion</span>
-                        </li>
-                    </ul>
-                    
-                    <h5 class="font-bold text-primary mb-2">Search Query Example:</h5>
-                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
-# ElasticSearch query for candidate search
-{
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "multi_match": {
-            "query": "software engineer python",
-            "fields": ["skills^3", "experience^2", "summary"],
-            "type": "cross_fields"
-          }
-        }
-      ],
-      "filter": [
-        { "term": { "status": "active" } },
-        { "range": { "experience_years": { "gte": 3 } } }
-      ]
-    }
-  },
-  "sort": [
-    { "_score": { "order": "desc" } },
-    { "relevance_score": { "order": "desc" } }
-  ]
-}</pre>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification Service Modal -->
-    <div id="notification-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-notification">Notification Service</h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-6 p-4 bg-teal-50 rounded-lg">
-                    <h4 class="font-bold mb-2">Tech Stack:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-teal-100 text-teal-800">Node.js</span>
-                        <span class="tech-badge bg-teal-100 text-teal-800">Express</span>
-                        <span class="tech-badge bg-teal-100 text-teal-800">Redis</span>
-                        <span class="tech-badge bg-teal-100 text-teal-800">Socket.IO</span>
-                        <span class="tech-badge bg-teal-100 text-teal-800">AWS SNS</span>
-                    </div>
-                </div>
-                
-                <h4 class="font-bold mb-2">Implementation Details:</h4>
-                <p class="mb-4 text-gray-700">
-                    The Notification Service handles all platform notifications including real-time alerts, 
-                    email notifications, SMS messages, and push notifications. It provides a unified interface 
-                    for delivering notifications through multiple channels.
-                </p>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Key Features:</h4>
-                    <ul class="space-y-2 mb-4">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Real-time in-app notifications</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Email templates with personalization</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>SMS and push notification delivery</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Notification preferences management</span>
-                        </li>
-                    </ul>
-                    
-                    <h5 class="font-bold text-primary mb-2">Notification Sending Logic:</h5>
-                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
-// Send notification to user
-async function sendNotification(userId, message, type) {
-    // Get user preferences
-    const preferences = await getUserPreferences(userId);
-    
-    // Check if user wants this type of notification
-    if (!preferences[type]) return;
-    
-    // Prepare notification channels
-    const channels = [];
-    if (preferences.inApp) channels.push('inApp');
-    if (preferences.email) channels.push('email');
-    if (preferences.sms) channels.push('sms');
-    if (preferences.push) channels.push('push');
-    
-    // Send through selected channels
-    for (const channel of channels) {
-        switch(channel) {
-            case 'inApp':
-                sendInAppNotification(userId, message);
-                break;
-            case 'email':
-                sendEmailNotification(userId, message);
-                break;
-            case 'sms':
-                sendSmsNotification(userId, message);
-                break;
-            case 'push':
-                sendPushNotification(userId, message);
-                break;
-        }
-    }
-    
-    // Log notification
-    logNotification(userId, message, type, channels);
-}</pre>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Verification Service Modal -->
-    <div id="verification-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-verification">Verification Service</h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-6 p-4 bg-orange-50 rounded-lg">
-                    <h4 class="font-bold mb-2">Tech Stack:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-orange-100 text-orange-800">.NET</span>
-                        <span class="tech-badge bg-orange-100 text-orange-800">C#</span>
-                        <span class="tech-badge bg-orange-100 text-orange-800">Blockchain</span>
-                        <span class="tech-badge bg-orange-100 text-orange-800">AWS KMS</span>
-                    </div>
-                </div>
-                
-                <h4 class="font-bold mb-2">Implementation Details:</h4>
-                <p class="mb-4 text-gray-700">
-                    The Verification Service handles identity verification, credential validation, 
-                    and background checks for both job seekers and employers. It uses blockchain 
-                    technology for tamper-proof verification records.
-                </p>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Key Features:</h4>
-                    <ul class="space-y-2 mb-4">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Identity verification with government IDs</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Education and employment verification</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Blockchain-based credential storage</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Background check integration</span>
-                        </li>
-                    </ul>
-                    
-                    <h5 class="font-bold text-primary mb-2">Blockchain Verification:</h5>
-                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
-// Store verification record on blockchain
-public async Task<string> StoreVerificationRecord(VerificationRecord record)
-{
-    // Create transaction
-    var transaction = new Transaction
-    {
-        FromAddress = _config.WalletAddress,
-        ToAddress = record.UserAddress,
-        Value = 0,
-        Data = JsonConvert.SerializeObject(record)
-    };
-    
-    // Sign transaction
-    transaction.Sign(_config.PrivateKey);
-    
-    // Submit to blockchain
-    var client = new BlockchainClient(_config.NodeUrl);
-    var response = await client.SubmitTransaction(transaction);
-    
-    if (!response.Success)
-        throw new VerificationException("Failed to store verification record");
-    
-    return response.TransactionHash;
-}</pre>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Data Layer Modal -->
-    <div id="data-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-data">Data Layer</h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-6 p-4 bg-gray-100 rounded-lg">
-                    <h4 class="font-bold mb-2">Tech Stack:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-gray-200 text-gray-800">PostgreSQL</span>
-                        <span class="tech-badge bg-gray-200 text-gray-800">MongoDB</span>
-                        <span class="tech-badge bg-gray-200 text-gray-800">AWS S3</span>
-                        <span class="tech-badge bg-gray-200 text-gray-800">Redis</span>
-                        <span class="tech-badge bg-gray-200 text-gray-800">ElasticSearch</span>
-                    </div>
-                </div>
-                
-                <h4 class="font-bold mb-2">Implementation Details:</h4>
-                <p class="mb-4 text-gray-700">
-                    The data layer provides persistence and data management for all services. We use a polyglot persistence approach with different databases for different data types.
-                </p>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Database Usage:</h4>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-database text-blue-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">PostgreSQL</h5>
-                                <p class="text-gray-600">Stores structured relational data like user profiles, job listings, and transactions</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-database text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">MongoDB</h5>
-                                <p class="text-gray-600">Stores unstructured data like user activity logs, chat messages, and document metadata</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-cloud text-orange-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">AWS S3</h5>
-                                <p class="text-gray-600">Stores media files including video CVs, documents, and profile images</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-bolt text-red-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Redis</h5>
-                                <p class="text-gray-600">Provides caching and session management for high-performance requirements</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-search text-purple-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">ElasticSearch</h5>
-                                <p class="text-gray-600">Powers search functionality and provides analytics capabilities</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Data Architecture:</h4>
-                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                        <div class="flex items-center justify-center mb-4">
-                            <div class="text-center">
-                                <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <i class="fas fa-server text-white"></i>
-                                </div>
-                                <p class="text-sm font-medium">Data Ingestion</p>
-                            </div>
-                            <div class="mx-4 text-blue-500">→</div>
-                            <div class="text-center">
-                                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <i class="fas fa-database text-white"></i>
-                                </div>
-                                <p class="text-sm font-medium">Storage</p>
-                            </div>
-                            <div class="mx-4 text-blue-500">→</div>
-                            <div class="text-center">
-                                <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <i class="fas fa-cogs text-white"></i>
-                                </div>
-                                <p class="text-sm font-medium">Processing</p>
-                            </div>
-                            <div class="mx-4 text-blue-500">→</div>
-                            <div class="text-center">
-                                <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <i class="fas fa-chart-line text-white"></i>
-                                </div>
-                                <p class="text-sm font-medium">Analytics</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <h5 class="font-bold text-primary mb-2">Data Processing Pipeline:</h5>
-                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
-# Example data processing with Apache Spark
-from pyspark.sql import SparkSession
-
-spark = SparkSession.builder.appName("ResumeProcessing").getOrCreate()
-
-# Load data from S3
-df = spark.read.parquet("s3a://nysm-data/resumes")
-
-# Process and enrich data
-processed_df = (df
-    .withColumn("skills", extract_skills_udf(df["text"]))
-    .withColumn("experience", calculate_experience_udf(df["text"]))
-    .withColumn("education", extract_education_udf(df["text"]))
-)
-
-# Write to analytics database
-processed_df.write.format("jdbc") \
-    .option("url", "jdbc:postgresql://db-host/nysm") \
-    .option("dbtable", "resume_analytics") \
-    .save()</pre>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Auth Service Modal -->
     <div id="auth-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-auth">Auth Service</h3>
+                    <div class="flex items-center"><i class="fas fa-user-lock text-auth text-3xl mr-3"></i><h3 class="text-2xl font-bold text-auth">Auth Service</h3></div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-2xl"></i></button>
+                </div>
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">How It Operates</h4>
+                    <p class="text-gray-700 mb-3">This microservice handles all aspects of user authentication and authorization. It manages user registration, validates credentials on login, and issues secure JSON Web Tokens (JWTs). Other services rely on it to verify user identity.</p>
+                    <h4 class="font-bold mb-2">Technology Used</h4>
+                    <p class="text-gray-700 mb-3">Built with <strong>Node.js</strong> and <strong>Express</strong>. Uses <strong>Passport.js</strong> for authentication strategies, <strong>bcrypt</strong> for securely hashing passwords, and the <strong>jsonwebtoken</strong> library for creating and verifying JWTs. It connects to the user table in the PostgreSQL database.</p>
+                </div>
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip"><i class="fas fa-user-secret"></i><div><strong>Threat Detection:</strong> AI can analyze login patterns to detect and block credential stuffing attacks, impossible travel scenarios, and other fraudulent activities in real-time.</div></div>
+                    <div class="ai-tip"><i class="fas fa-code"></i><div><strong>Boilerplate Generation:</strong> Use GitHub Copilot to quickly generate the standard code for JWT creation, token verification middleware, and password hashing logic, reducing repetitive setup work.</div></div>
+                </div>
+                <div class="flex justify-end mt-4"><button onclick="closeModal()" class="bg-auth text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition">Close</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center"><i class="fas fa-id-card text-profile text-3xl mr-3"></i><h3 class="text-2xl font-bold text-profile">Profile Service</h3></div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-2xl"></i></button>
+                </div>
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">How It Operates</h4>
+                    <p class="text-gray-700 mb-3">This service is responsible for managing all data related to a user's profile. This includes personal details, work experience, education, and skills. It provides standard CRUD (Create, Read, Update, Delete) endpoints for profile management.</p>
+                    <h4 class="font-bold mb-2">Technology Used</h4>
+                    <p class="text-gray-700 mb-3">A <strong>Node.js</strong> and <strong>Express</strong> microservice that communicates with its own set of tables in the <strong>PostgreSQL</strong> database, likely using an ORM like <strong>Sequelize</strong> or <strong>Prisma</strong> for database interactions.</p>
+                </div>
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip"><i class="fas fa-magic"></i><div><strong>Data Enrichment:</strong> AI can suggest skills to add to a user's profile based on their job titles and descriptions, helping them build a more complete and effective profile.</div></div>
+                    <div class="ai-tip"><i class="fas fa-server"></i><div><strong>API Scaffolding:</strong> Use AI assistants to quickly generate the full CRUD RESTful API, including data validation rules, database models, and route handlers, based on a schema definition.</div></div>
+                </div>
+                <div class="flex justify-end mt-4"><button onclick="closeModal()" class="bg-profile text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition">Close</button></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="vcv-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center"><i class="fas fa-video text-vcv text-3xl mr-3"></i><h3 class="text-2xl font-bold text-vcv">Video CV Service</h3></div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-2xl"></i></button>
+                </div>
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">How It Operates</h4>
+                    <p class="text-gray-700 mb-3">This specialized service manages the lifecycle of video resumes. It handles large file uploads, stores the raw video files, triggers processing jobs (like transcoding for different devices), and provides secure URLs for streaming the final video.</p>
+                    <h4 class="font-bold mb-2">Technology Used</h4>
+                    <p class="text-gray-700 mb-3">A <strong>Node.js</strong> service that orchestrates operations. It uses <strong>AWS S3</strong> for durable, scalable object storage. Video processing can be done with <strong>FFmpeg</strong> on a compute instance or using a managed service like <strong>AWS Elemental MediaConvert</strong>.</p>
+                </div>
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip"><i class="fas fa-closed-captioning"></i><div><strong>Automated Transcription & Analysis:</strong> Integrate with AI services like <strong>AWS Transcribe</strong> to generate text transcripts from videos and <strong>AWS Rekognition</strong> to analyze speech sentiment or detect inappropriate content.</div></div>
+                    <div class="ai-tip"><i class="fas fa-cogs"></i><div><strong>Workflow Orchestration:</strong> Use AI assistants to help write the code for complex media processing workflows, such as chaining S3 uploads to Lambda triggers that start MediaConvert jobs.</div></div>
+                </div>
+                <div class="flex justify-end mt-4"><button onclick="closeModal()" class="bg-vcv text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">Close</button></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="ai-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center"><i class="fas fa-robot text-ai text-3xl mr-3"></i><h3 class="text-2xl font-bold text-ai">AI Engine</h3></div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-2xl"></i></button>
+                </div>
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">How It Operates</h4>
+                    <p class="text-gray-700 mb-3">The AI Engine is a core service that houses the machine learning models. It exposes simple API endpoints that other services can call to get predictions. For example, it can take a user profile and a job description and return a match score, or analyze a video for key talking points.</p>
+                    <h4 class="font-bold mb-2">Technology Used</h4>
+                    <p class="text-gray-700 mb-3">Primarily developed in <strong>Python</strong> using frameworks like <strong>FastAPI</strong> for high-performance APIs. The ML models are built with <strong>TensorFlow</strong> or <strong>PyTorch</strong>. It is deployed on scalable, GPU-accelerated infrastructure like <strong>AWS SageMaker</strong> or Kubernetes.</p>
+                </div>
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip"><i class="fas fa-brain"></i><div><strong>Model Building:</strong> The core of this service is AI. Development is accelerated with AutoML tools (e.g., Google AutoML, H2O.ai) for automated model selection and hyperparameter tuning.</div></div>
+                    <div class="ai-tip"><i class="fas fa-shipping-fast"></i><div><strong>MLOps Automation:</strong> Use platforms like MLflow or Kubeflow, often with AI-driven suggestions, to manage the entire machine learning lifecycle from experimentation to deployment and monitoring.</div></div>
+                </div>
+                <div class="flex justify-end mt-4"><button onclick="closeModal()" class="bg-ai text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">Close</button></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="job-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center"><i class="fas fa-briefcase text-job text-3xl mr-3"></i><h3 class="text-2xl font-bold text-job">Job Service</h3></div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-2xl"></i></button>
+                </div>
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">How It Operates</h4>
+                    <p class="text-gray-700 mb-3">This service manages all data and logic related to job postings. It provides endpoints for creating, retrieving, and searching for jobs. It also collaborates with the AI Engine to provide intelligent job recommendations to users.</p>
+                    <h4 class="font-bold mb-2">Technology Used</h4>
+                    <p class="text-gray-700 mb-3">A <strong>Node.js</strong> and <strong>Express</strong> microservice. For powerful search capabilities, it might use <strong>Elasticsearch</strong> in addition to <strong>PostgreSQL</strong>. It handles business logic for job applications and employer interactions.</p>
+                </div>
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip"><i class="fas fa-search"></i><div><strong>Intelligent Search:</strong> Instead of simple keyword matching, integrate with the AI Engine to enable semantic search, which understands the intent and context behind a user's query to deliver more relevant results.</div></div>
+                    <div class="ai-tip"><i class="fas fa-cogs"></i><div><strong>Query Generation:</strong> Use AI assistants to help construct complex Elasticsearch or SQL queries for advanced filtering and aggregation, which can be difficult to write manually.</div></div>
+                </div>
+                <div class="flex justify-end mt-4"><button onclick="closeModal()" class="bg-job text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">Close</button></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="data-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center"><i class="fas fa-database text-data text-3xl mr-3"></i><h3 class="text-2xl font-bold text-data">Data Layer</h3></div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-2xl"></i></button>
+                </div>
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">How It Operates</h4>
+                    <p class="text-gray-700 mb-3">The Data Layer is the foundation for stateful information. It's not a single database, but a collection of persistence solutions. Each microservice is responsible for its own data, preventing tight coupling. This includes relational databases for structured data and object stores for files.</p>
+                    <h4 class="font-bold mb-2">Technology Used</h4>
+                    <p class="text-gray-700 mb-3">Our primary relational database is <strong>PostgreSQL</strong>, often managed via <strong>AWS RDS</strong> for scalability and reliability. For storing large files like videos and images, we use <strong>AWS S3</strong>. A caching layer like <strong>Redis</strong> could also be used to improve performance.</p>
+                </div>
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip"><i class="fas fa-sitemap"></i><div><strong>Schema Design:</strong> Provide an AI assistant with your data requirements in plain English, and it can generate an optimized SQL schema, including tables, columns, data types, and relationships.</div></div>
+                    <div class="ai-tip"><i class="fas fa-tachometer-alt"></i><div><strong>Query Optimization:</strong> Tools like <strong>pganalyze</strong> or <strong>EverSQL</strong> use AI to analyze slow queries, explain their execution plans, and automatically recommend more efficient queries or suggest new indexes.</div></div>
+                </div>
+                <div class="flex justify-end mt-4"><button onclick="closeModal()" class="bg-data text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">Close</button></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Technology Modals -->
+    <!-- React Modal -->
+    <div id="react-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center">
+                        <i class="fab fa-react text-blue-600 text-3xl mr-3"></i>
+                        <h3 class="text-2xl font-bold text-blue-600">React</h3>
+                    </div>
                     <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
                 </div>
                 
-                <div class="mb-6 p-4 bg-green-50 rounded-lg">
-                    <h4 class="font-bold mb-2">Tech Stack:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-green-100 text-green-800">Node.js</span>
-                        <span class="tech-badge bg-green-100 text-green-800">Express.js</span>
-                        <span class="tech-badge bg-green-100 text-green-800">JWT</span>
-                        <span class="tech-badge bg-green-100 text-green-800">OAuth 2.0</span>
-                        <span class="tech-badge bg-green-100 text-green-800">Redis</span>
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">What is React?</h4>
+                    <p class="text-gray-700 mb-3">
+                        React is a declarative, efficient, and flexible JavaScript library for building user interfaces. 
+                        It lets you compose complex UIs from small, isolated pieces of code called components.
+                    </p>
+                    
+                    <h4 class="font-bold mb-2">How We Use It</h4>
+                    <p class="text-gray-700 mb-3">
+                        We use React with TypeScript to build our responsive frontend applications. Key features:
+                    </p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-code text-blue-500"></i>
+                            <h5 class="font-semibold">Component-Based</h5>
+                            <p class="text-sm">Reusable UI components</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-bolt text-blue-500"></i>
+                            <h5 class="font-semibold">Virtual DOM</h5>
+                            <p class="text-sm">Efficient updates</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-sync text-blue-500"></i>
+                            <h5 class="font-semibold">State Management</h5>
+                            <p class="text-sm">Redux for complex state</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-mobile-alt text-blue-500"></i>
+                            <h5 class="font-semibold">Responsive</h5>
+                            <p class="text-sm">Adapts to all devices</p>
+                        </div>
                     </div>
                 </div>
                 
-                <h4 class="font-bold mb-2">Implementation Details:</h4>
-                <p class="mb-4 text-gray-700">
-                    The authentication service handles user registration, login, and session management. It implements OAuth 2.0 and OpenID Connect for secure authentication and authorization.
-                </p>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Key Features:</h4>
-                    <ul class="space-y-2 mb-4">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>JWT-based authentication with refresh tokens</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Social login (Google, LinkedIn, Microsoft)</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Multi-factor authentication options</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <span>Role-based access control (RBAC)</span>
-                        </li>
-                    </ul>
-                    
-                    <h5 class="font-bold text-primary mb-2">Security Implementation:</h5>
-                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
-// JWT token generation
-const generateToken = (user) => {
-    return jwt.sign(
-        {
-            userId: user._id,
-            role: user.role,
-            email: user.email
-        },
-        process.env.JWT_SECRET,
-        {
-            expiresIn: '1h',
-            issuer: 'nysm-auth-service'
-        }
-    );
-};
-
-// Token verification middleware
-const verifyToken = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ error: 'Access denied' });
-    
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
-    } catch (err) {
-        res.status(400).json({ error: 'Invalid token' });
-    }
-};</pre>
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip">
+                        <i class="fas fa-code"></i>
+                        <div><strong>Component Generation:</strong> Use GitHub Copilot to scaffold React components with proper TypeScript typing</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-bug"></i>
+                        <div><strong>Debugging:</strong> Implement DeepCode or Tabnine for AI-powered code analysis and bug detection</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-sync-alt"></i>
+                        <div><strong>Code Refactoring:</strong> Use tools like Codota to optimize component structure and performance</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-robot"></i>
+                        <div><strong>Accessibility:</strong> Leverage AI tools like AccessiBe to automatically check and improve accessibility compliance</div>
+                    </div>
                 </div>
                 
-                <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
+                <div class="flex justify-end mt-4">
+                    <button onclick="closeModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Node.js Modal -->
+    <div id="node-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center">
+                        <i class="fab fa-node-js text-node text-3xl mr-3"></i>
+                        <h3 class="text-2xl font-bold text-node">Node.js</h3>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">What is Node.js?</h4>
+                    <p class="text-gray-700 mb-3">
+                        Node.js is an open-source, cross-platform JavaScript runtime environment that executes 
+                        JavaScript code outside a web browser. It uses an event-driven, non-blocking I/O model 
+                        that makes it lightweight and efficient.
+                    </p>
+                    
+                    <h4 class="font-bold mb-2">How We Use It</h4>
+                    <p class="text-gray-700 mb-3">
+                        We use Node.js with Express.js to build our backend microservices. Key features:
+                    </p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-bolt text-green-500"></i>
+                            <h5 class="font-semibold">High Performance</h5>
+                            <p class="text-sm">Non-blocking I/O</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-code-branch text-green-500"></i>
+                            <h5 class="font-semibold">Event-Driven</h5>
+                            <p class="text-sm">Asynchronous architecture</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-boxes text-green-500"></i>
+                            <h5 class="font-semibold">NPM Ecosystem</h5>
+                            <p class="text-sm">Largest package registry</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-expand-arrows-alt text-green-500"></i>
+                            <h5 class="font-semibold">Scalable</h5>
+                            <p class="text-sm">Handles high concurrency</p>
+                        </div>
+                    </div>
+                    
+                    <h4 class="font-bold mt-4 mb-2">Key Use Cases</h4>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <div>Building RESTful APIs and microservices</div>
+                    </div>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <div>Real-time applications with WebSockets</div>
+                    </div>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <div>Middleware and API gateways</div>
+                    </div>
+                </div>
+                
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip">
+                        <i class="fas fa-code"></i>
+                        <div><strong>API Generation:</strong> Use GitHub Copilot to scaffold REST endpoints with Express.js</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-bug"></i>
+                        <div><strong>Debugging:</strong> Implement DeepSource for automated code reviews and bug detection</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-shield-alt"></i>
+                        <div><strong>Security:</strong> Use Snyk AI to identify vulnerabilities in dependencies</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <div><strong>Performance:</strong> Leverage AppMap for AI-driven performance optimization</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mt-4">
+                    <button onclick="closeModal()" class="bg-node text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Python Modal -->
+    <div id="python-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center">
+                        <i class="fab fa-python text-python text-3xl mr-3"></i>
+                        <h3 class="text-2xl font-bold text-python">Python</h3>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">What is Python?</h4>
+                    <p class="text-gray-700 mb-3">
+                        Python is a high-level, interpreted programming language known for its simplicity, 
+                        readability, and extensive ecosystem. It's widely used for data analysis, machine learning, 
+                        and backend development.
+                    </p>
+                    
+                    <h4 class="font-bold mb-2">How We Use It</h4>
+                    <p class="text-gray-700 mb-3">
+                        We use Python for our data processing pipelines and AI/ML services. Key features:
+                    </p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-brain text-yellow-500"></i>
+                            <h5 class="font-semibold">AI/ML Ecosystem</h5>
+                            <p class="text-sm">TensorFlow, PyTorch, scikit-learn</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-chart-line text-yellow-500"></i>
+                            <h5 class="font-semibold">Data Science</h5>
+                            <p class="text-sm">Pandas, NumPy, Matplotlib</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-server text-yellow-500"></i>
+                            <h5 class="font-semibold">Backend</h5>
+                            <p class="text-sm">Django, Flask, FastAPI</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-code text-yellow-500"></i>
+                            <h5 class="font-semibold">Readability</h5>
+                            <p class="text-sm">Clean, maintainable code</p>
+                        </div>
+                    </div>
+                    
+                    <h4 class="font-bold mt-4 mb-2">Key Use Cases</h4>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-yellow-500"></i>
+                        <div>Machine learning model development and training</div>
+                    </div>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-yellow-500"></i>
+                        <div>Data processing and ETL pipelines</div>
+                    </div>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-yellow-500"></i>
+                        <div>API development with FastAPI</div>
+                    </div>
+                </div>
+                
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip">
+                        <i class="fas fa-robot"></i>
+                        <div><strong>Code Completion:</strong> Use Kite for intelligent Python code suggestions</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-brain"></i>
+                        <div><strong>Model Development:</strong> Leverage Google Colab with AI-powered code suggestions</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-bug"></i>
+                        <div><strong>Debugging:</strong> Implement DeepCode for AI-driven error detection</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-flask"></i>
+                        <div><strong>Testing:</strong> Use Testim.io for AI-generated test cases</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mt-4">
+                    <button onclick="closeModal()" class="bg-python text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- TensorFlow Modal -->
+    <div id="tensorflow-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-brain text-ai text-3xl mr-3"></i>
+                        <h3 class="text-2xl font-bold text-ai">TensorFlow</h3>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">What is TensorFlow?</h4>
+                    <p class="text-gray-700 mb-3">
+                        TensorFlow is an end-to-end open-source platform for machine learning. It has a comprehensive, 
+                        flexible ecosystem of tools, libraries, and community resources that lets researchers push 
+                        state-of-the-art ML and developers easily build and deploy ML-powered applications.
+                    </p>
+                    
+                    <h4 class="font-bold mb-2">How We Use It</h4>
+                    <p class="text-gray-700 mb-3">
+                        We use TensorFlow for our AI-powered recommendation systems and video analysis. Key features:
+                    </p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-layer-group text-purple-500"></i>
+                            <h5 class="font-semibold">Neural Networks</h5>
+                            <p class="text-sm">Deep learning models</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-cloud-upload-alt text-purple-500"></i>
+                            <h5 class="font-semibold">Deployment</h5>
+                            <p class="text-sm">TF Serving, TF Lite</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-chart-line text-purple-500"></i>
+                            <h5 class="font-semibold">Visualization</h5>
+                            <p class="text-sm">TensorBoard</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-arrows-alt text-purple-500"></i>
+                            <h5 class="font-semibold">Scalability</h5>
+                            <p class="text-sm">Distributed training</p>
+                        </div>
+                    </div>
+                    
+                    <h4 class="font-bold mt-4 mb-2">Key Use Cases</h4>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-purple-500"></i>
+                        <div>Video analysis for candidate evaluation</div>
+                    </div>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-purple-500"></i>
+                        <div>Natural language processing for resume parsing</div>
+                    </div>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-purple-500"></i>
+                        <div>Recommendation systems for job matching</div>
+                    </div>
+                </div>
+                
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip">
+                        <i class="fas fa-cogs"></i>
+                        <div><strong>Model Architecture:</strong> Use Google AutoML to suggest optimal model architectures</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-sliders-h"></i>
+                        <div><strong>Hyperparameter Tuning:</strong> Implement Keras Tuner for automated hyperparameter optimization</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-chart-line"></i>
+                        <div><strong>Monitoring:</strong> Use Arize AI for model performance monitoring and drift detection</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-bolt"></i>
+                        <div><strong>Optimization:</strong> Leverage TensorFlow Model Optimization Toolkit for model quantization</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mt-4">
+                    <button onclick="closeModal()" class="bg-ai text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AWS Modal -->
+    <div id="aws-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center">
+                        <i class="fab fa-aws text-aws text-3xl mr-3"></i>
+                        <h3 class="text-2xl font-bold text-aws">Amazon Web Services</h3>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">What is AWS?</h4>
+                    <p class="text-gray-700 mb-3">
+                        Amazon Web Services (AWS) is a comprehensive, evolving cloud computing platform provided 
+                        by Amazon. It provides a mix of infrastructure as a service (IaaS), platform as a service (PaaS), 
+                        and packaged software as a service (SaaS) offerings.
+                    </p>
+                    
+                    <h4 class="font-bold mb-2">How We Use It</h4>
+                    <p class="text-gray-700 mb-3">
+                        We use AWS for our entire cloud infrastructure. Key services:
+                    </p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-server text-orange-500"></i>
+                            <h5 class="font-semibold">Compute</h5>
+                            <p class="text-sm">EC2, Lambda, ECS</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-database text-orange-500"></i>
+                            <h5 class="font-semibold">Database</h5>
+                            <p class="text-sm">RDS, DynamoDB</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-network-wired text-orange-500"></i>
+                            <h5 class="font-semibold">Networking</h5>
+                            <p class="text-sm">VPC, Route 53</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-lock text-orange-500"></i>
+                            <h5 class="font-semibold">Security</h5>
+                            <p class="text-sm">IAM, KMS, WAF</p>
+                        </div>
+                    </div>
+                    
+                    <h4 class="font-bold mt-4 mb-2">Key Use Cases</h4>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-orange-500"></i>
+                        <div>Hosting containerized microservices with ECS</div>
+                    </div>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-orange-500"></i>
+                        <div>Serverless functions with AWS Lambda</div>
+                    </div>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-orange-500"></i>
+                        <div>Managed databases with RDS PostgreSQL</div>
+                    </div>
+                </div>
+                
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip">
+                        <i class="fas fa-wrench"></i>
+                        <div><strong>Infrastructure as Code:</strong> Use AWS CloudFormation with AI-powered templates from GitHub Copilot</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-shield-alt"></i>
+                        <div><strong>Security:</strong> Implement AWS GuardDuty for AI-driven threat detection</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-chart-line"></i>
+                        <div><strong>Monitoring:</strong> Use Amazon DevOps Guru for AI-powered operational insights</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-dollar-sign"></i>
+                        <div><strong>Cost Optimization:</strong> Leverage AWS Cost Explorer with AI-powered recommendations</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mt-4">
+                    <button onclick="closeModal()" class="bg-aws text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PostgreSQL Modal -->
+    <div id="postgres-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-database text-postgres text-3xl mr-3"></i>
+                        <h3 class="text-2xl font-bold text-postgres">PostgreSQL</h3>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">What is PostgreSQL?</h4>
+                    <p class="text-gray-700 mb-3">
+                        PostgreSQL is a powerful, open-source object-relational database system with over 30 years 
+                        of active development. It has earned a strong reputation for reliability, feature robustness, 
+                        and performance.
+                    </p>
+                    
+                    <h4 class="font-bold mb-2">How We Use It</h4>
+                    <p class="text-gray-700 mb-3">
+                        We use PostgreSQL as our primary relational database for transactional data. Key features:
+                    </p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-check-double text-blue-500"></i>
+                            <h5 class="font-semibold">ACID Compliance</h5>
+                            <p class="text-sm">Data integrity</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-bolt text-blue-500"></i>
+                            <h5 class="font-semibold">Performance</h5>
+                            <p class="text-sm">Advanced indexing</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-expand text-blue-500"></i>
+                            <h5 class="font-semibold">Scalability</h5>
+                            <p class="text-sm">Partitioning, replication</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-lock text-blue-500"></i>
+                            <h5 class="font-semibold">Security</h5>
+                            <p class="text-sm">Encryption, RBAC</p>
+                        </div>
+                    </div>
+                    
+                    <h4 class="font-bold mt-4 mb-2">Key Use Cases</h4>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-blue-500"></i>
+                        <div>Storing structured application data</div>
+                    </div>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-blue-500"></i>
+                        <div>Transactional data with complex relationships</div>
+                    </div>
+                    <div class="use-case">
+                        <i class="fas fa-check-circle text-blue-500"></i>
+                        <div>Geospatial data with PostGIS extension</div>
+                    </div>
+                </div>
+                
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip">
+                        <i class="fas fa-database"></i>
+                        <div><strong>Query Optimization:</strong> Use pgMustard for AI-powered query performance analysis</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-cogs"></i>
+                        <div><strong>Schema Design:</strong> Implement SchemaCrawler with AI-assisted schema analysis</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-bolt"></i>
+                        <div><strong>Performance Tuning:</strong> Use pganalyze for AI-driven index recommendations</div>
+                    </div>
+                    <div class="ai-tip">
+                        <i class="fas fa-shield-alt"></i>
+                        <div><strong>Security:</strong> Leverage CloudQuery for AI-powered security auditing</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mt-4">
+                    <button onclick="closeModal()" class="bg-postgres text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">Close</button>
                 </div>
             </div>
         </div>
@@ -1629,8 +1283,11 @@ const verifyToken = (req, res, next) => {
     <script>
         // Modal functions
         function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-            document.body.style.overflow = 'hidden';
+            const modal = document.getElementById(modalId);
+            if(modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
         }
         
         function closeModal() {
@@ -1649,6 +1306,13 @@ const verifyToken = (req, res, next) => {
             });
         });
         
+        // Close modal with Escape key
+        window.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1657,25 +1321,13 @@ const verifyToken = (req, res, next) => {
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
                     window.scrollTo({
-                        top: target.offsetTop - 80,
+                        top: target.offsetTop - 80, // Adjust for sticky header
                         behavior: 'smooth'
                     });
                 }
             });
         });
         
-        // Add animation to elements when they come into view
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        document.querySelectorAll('.tech-card').forEach(card => {
-            observer.observe(card);
-        });
     </script>
 </body>
 </html>
