@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NYSM Platform Architecture Plan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>NYSM Platform Architecture</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -16,23 +16,38 @@
                         accent: '#0ea5e9',
                         dark: '#1e293b',
                         light: '#f1f5f9',
-                        success: '#10b981',
-                        warning: '#f59e0b',
-                        danger: '#ef4444',
-                        teal: '#14b8a6',
-                        pink: '#ec4899',
-                        orange: '#f97316'
+                        ai: '#f59e0b',
+                        data: '#4b5563',
+                        auth: '#10b981',
+                        profile: '#8b5cf6',
+                        vcv: '#ef4444',
+                        job: '#6366f1',
+                        search: '#ec4899',
+                        notification: '#0d9488',
+                        verification: '#f97316'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            background: linear-gradient(to bottom, #f0f9ff, #e0f2fe);
+            background-attachment: fixed;
         }
         
         .architecture-grid {
@@ -49,13 +64,23 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transform: scale(1);
+            position: relative;
         }
         
         .component-card:hover {
-            transform: translateY(-5px) scale(1.02);
+            transform: translateY(-5px);
             box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
-            z-index: 10;
+        }
+        
+        .component-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+            z-index: 1;
         }
         
         .modal {
@@ -71,9 +96,9 @@
         
         .tech-badge {
             display: inline-block;
-            padding: 3px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             margin: 2px;
             font-weight: 500;
         }
@@ -82,6 +107,7 @@
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border-radius: 16px;
             position: relative;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
         }
         
         .timeline-item {
@@ -99,6 +125,7 @@
             height: 16px;
             border-radius: 50%;
             background: #2563eb;
+            z-index: 2;
         }
         
         .timeline-item:after {
@@ -115,115 +142,96 @@
             display: none;
         }
         
-        .code-block {
-            background: #1e293b;
-            color: #f1f5f9;
-            border-radius: 8px;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            overflow-x: auto;
-            margin: 15px 0;
-            line-height: 1.5;
-        }
-        
-        .code-keyword {
-            color: #f472b6;
-        }
-        
-        .code-comment {
-            color: #94a3b8;
-        }
-        
-        .code-string {
-            color: #86efac;
-        }
-        
-        .code-function {
-            color: #60a5fa;
-        }
-        
-        .service-diagram {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 20px 0;
-        }
-        
-        .service-row {
-            display: flex;
-            justify-content: center;
-            margin: 10px 0;
-            width: 100%;
-        }
-        
-        .service-box {
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            text-align: center;
-            margin: 0 10px;
-            min-width: 160px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .ai-tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .ai-tool-card {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        .tech-card {
             transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
         }
         
-        .ai-tool-card:hover {
+        .tech-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-content {
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
         }
         
         .pulse {
-            animation: pulse 2s infinite;
+            animation: pulse-slow 4s infinite;
         }
         
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        .glow {
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
         }
         
-        .nav-link {
-            position: relative;
-            padding: 0.5rem 0;
+        @media (max-width: 1024px) {
+            .architecture-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: auto;
+                height: auto;
+            }
         }
         
-        .nav-link::after {
-            content: '';
+        @media (max-width: 768px) {
+            .architecture-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .diagram-line {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
             background: #2563eb;
-            transition: width 0.3s ease;
+            z-index: 1;
         }
         
-        .nav-link:hover::after {
-            width: 100%;
+        .line-1 {
+            top: 25%;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+        }
+        
+        .line-2 {
+            top: 50%;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+        }
+        
+        .line-3 {
+            top: 75%;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+        }
+        
+        .connector-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2563eb;
+            z-index: 2;
         }
     </style>
 </head>
-<body class="bg-light text-dark">
+<body class="bg-gradient-to-b from-blue-50 to-indigo-50 text-dark">
     <!-- Header -->
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center">
-                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
+                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3 glow">
                     <i class="fas fa-brain text-white text-xl"></i>
                 </div>
                 <h1 class="text-2xl font-bold text-primary">NYSM Architecture</h1>
@@ -231,102 +239,124 @@
             
             <nav class="hidden md:block">
                 <ul class="flex space-x-8">
-                    <li><a href="#overview" class="text-gray-700 hover:text-primary font-medium nav-link">Overview</a></li>
-                    <li><a href="#architecture" class="text-gray-700 hover:text-primary font-medium nav-link">Architecture</a></li>
-                    <li><a href="#tech" class="text-gray-700 hover:text-primary font-medium nav-link">Tech Stack</a></li>
-                    <li><a href="#roadmap" class="text-gray-700 hover:text-primary font-medium nav-link">Roadmap</a></li>
-                    <li><a href="#ai" class="text-gray-700 hover:text-primary font-medium nav-link">AI Tools</a></li>
+                    <li><a href="#overview" class="text-gray-700 hover:text-primary font-medium transition-colors">Overview</a></li>
+                    <li><a href="#architecture" class="text-gray-700 hover:text-primary font-medium transition-colors">Architecture</a></li>
+                    <li><a href="#tech" class="text-gray-700 hover:text-primary font-medium transition-colors">Tech Stack</a></li>
+                    <li><a href="#roadmap" class="text-gray-700 hover:text-primary font-medium transition-colors">Roadmap</a></li>
                 </ul>
             </nav>
             
-            <button class="md:hidden text-gray-700" id="mobile-menu-btn">
-                <i class="fas fa-bars text-2xl"></i>
-            </button>
-        </div>
-        
-        <!-- Mobile Menu -->
-        <div class="md:hidden hidden bg-white py-4 px-4 absolute w-full z-50 shadow-lg" id="mobile-menu">
-            <ul class="space-y-3">
-                <li><a href="#overview" class="text-gray-700 hover:text-primary font-medium block py-2" onclick="closeMobileMenu()">Overview</a></li>
-                <li><a href="#architecture" class="text-gray-700 hover:text-primary font-medium block py-2" onclick="closeMobileMenu()">Architecture</a></li>
-                <li><a href="#tech" class="text-gray-700 hover:text-primary font-medium block py-2" onclick="closeMobileMenu()">Tech Stack</a></li>
-                <li><a href="#roadmap" class="text-gray-700 hover:text-primary font-medium block py-2" onclick="closeMobileMenu()">Roadmap</a></li>
-                <li><a href="#ai" class="text-gray-700 hover:text-primary font-medium block py-2" onclick="closeMobileMenu()">AI Tools</a></li>
-            </ul>
+            <div>
+                <button class="bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-secondary transition mr-3">
+                    <i class="fas fa-download mr-2"></i> Docs
+                </button>
+                <button class="bg-white border border-primary text-primary px-4 py-2 rounded-lg font-medium hover:bg-blue-50 transition">
+                    <i class="fas fa-play-circle mr-2"></i> Demo
+                </button>
+            </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-primary to-secondary text-white py-16">
+    <section class="bg-gradient-to-r from-primary to-secondary text-white py-20">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4">NYSM Platform Architecture</h2>
-            <p class="text-xl max-w-3xl mx-auto mb-8">Cloud-native microservices architecture with AI-powered features for the next-generation recruitment platform</p>
-            <div class="flex justify-center space-x-4">
-                <button class="bg-white text-primary px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition">Download Plan</button>
-                <button class="bg-transparent border-2 border-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:bg-opacity-10 transition">Request Demo</button>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 fade-in">NYSM Platform Architecture</h1>
+            <p class="text-xl max-w-3xl mx-auto mb-8 fade-in" style="animation-delay: 0.2s">Cloud-native microservices architecture with AI-powered features for next-generation recruitment</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 fade-in" style="animation-delay: 0.4s">
+                <button class="bg-white text-primary px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition shadow-lg hover:shadow-xl">
+                    <i class="fas fa-file-pdf mr-2"></i> Download Blueprint
+                </button>
+                <button class="bg-transparent border-2 border-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:bg-opacity-10 transition">
+                    <i class="fas fa-video mr-2"></i> Platform Demo
+                </button>
             </div>
         </div>
     </section>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-12">
+    <main class="container mx-auto px-4 py-12 max-w-7xl">
         <!-- Overview Section -->
-        <section id="overview" class="mb-20">
+        <section id="overview" class="mb-20 bg-white rounded-2xl shadow-xl p-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold mb-4">Platform Overview</h2>
-                <div class="w-20 h-1 bg-primary mx-auto"></div>
+                <div class="w-20 h-1 bg-primary mx-auto rounded-full"></div>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">A modern, AI-driven recruitment platform built with cloud-native technologies and microservices architecture</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <div class="bg-white p-6 rounded-xl shadow-lg pulse">
+                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
                     <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
                         <i class="fas fa-user text-primary text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Job Seeker Experience</h3>
-                    <p class="text-gray-600">AI-guided video CV creation, personalized career coaching, and smart job matching for candidates.</p>
+                    <p class="text-gray-600 mb-4">AI-guided video CV creation, personalized career coaching, and smart job matching for candidates.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tech-badge bg-blue-100 text-blue-800">AI Analysis</span>
+                        <span class="tech-badge bg-blue-100 text-blue-800">Video Processing</span>
+                        <span class="tech-badge bg-blue-100 text-blue-800">Personalization</span>
+                    </div>
                 </div>
                 
-                <div class="bg-white p-6 rounded-xl shadow-lg">
+                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
                     <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
                         <i class="fas fa-building text-primary text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Employer Portal</h3>
-                    <p class="text-gray-600">AI-powered candidate search, video assessment tools, and streamlined hiring workflows for recruiters.</p>
+                    <p class="text-gray-600 mb-4">AI-powered candidate search, video assessment tools, and streamlined hiring workflows for recruiters.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tech-badge bg-blue-100 text-blue-800">Smart Search</span>
+                        <span class="tech-badge bg-blue-100 text-blue-800">Analytics</span>
+                        <span class="tech-badge bg-blue-100 text-blue-800">Workflow</span>
+                    </div>
                 </div>
                 
-                <div class="bg-white p-6 rounded-xl shadow-lg">
+                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
                     <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
                         <i class="fas fa-cogs text-primary text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Admin & Operations</h3>
-                    <p class="text-gray-600">Real-time analytics, automated moderation, and comprehensive platform management tools.</p>
+                    <p class="text-gray-600 mb-4">Real-time analytics, automated moderation, and comprehensive platform management tools.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tech-badge bg-blue-100 text-blue-800">Monitoring</span>
+                        <span class="tech-badge bg-blue-100 text-blue-800">Security</span>
+                        <span class="tech-badge bg-blue-100 text-blue-800">Automation</span>
+                    </div>
                 </div>
             </div>
             
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="p-6">
-                    <h3 class="text-xl font-bold mb-4">Key Architecture Principles</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
-                            <i class="fas fa-cubes text-accent text-3xl mb-2"></i>
-                            <h4 class="font-bold">Microservices</h4>
-                            <p class="text-sm text-gray-600 mt-2">Loosely coupled services for independent scaling</p>
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-200">
+                <h3 class="text-2xl font-bold text-center mb-6 text-primary">Architecture Principles</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-xl text-center border border-blue-100 hover:shadow-lg transition">
+                        <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-cubes text-primary text-2xl"></i>
                         </div>
-                        <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
-                            <i class="fas fa-cloud text-accent text-3xl mb-2"></i>
-                            <h4 class="font-bold">Cloud-Native</h4>
-                            <p class="text-sm text-gray-600 mt-2">Built for AWS with auto-scaling capabilities</p>
+                        <h4 class="font-bold text-lg mb-2">Microservices</h4>
+                        <p class="text-gray-600">Independent, scalable services with well-defined APIs</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl text-center border border-blue-100 hover:shadow-lg transition">
+                        <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-cloud text-primary text-2xl"></i>
                         </div>
-                        <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
-                            <i class="fas fa-lock text-accent text-3xl mb-2"></i>
-                            <h4 class="font-bold">Secure</h4>
-                            <p class="text-sm text-gray-600 mt-2">Zero-trust architecture with end-to-end encryption</p>
+                        <h4 class="font-bold text-lg mb-2">Cloud-Native</h4>
+                        <p class="text-gray-600">Designed for AWS with auto-scaling and resilience</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl text-center border border-blue-100 hover:shadow-lg transition">
+                        <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-lock text-primary text-2xl"></i>
                         </div>
-                        <div class="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition">
-                            <i class="fas fa-brain text-accent text-3xl mb-2"></i>
-                            <h4 class="font-bold">AI-Powered</h4>
-                            <p class="text-sm text-gray-600 mt-2">Intelligent features throughout the platform</p>
+                        <h4 class="font-bold text-lg mb-2">Secure</h4>
+                        <p class="text-gray-600">Zero-trust architecture with end-to-end encryption</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl text-center border border-blue-100 hover:shadow-lg transition">
+                        <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-brain text-primary text-2xl"></i>
                         </div>
+                        <h4 class="font-bold text-lg mb-2">AI-Powered</h4>
+                        <p class="text-gray-600">AI integration at every layer for intelligent features</p>
                     </div>
                 </div>
             </div>
@@ -336,13 +366,13 @@
         <section id="architecture" class="mb-20">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold mb-4">System Architecture</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Cloud-native microservices architecture deployed on AWS with AI integration at every layer</p>
-                <div class="w-20 h-1 bg-primary mx-auto mt-4"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto">Click on any component to explore its implementation details and technologies</p>
+                <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
             </div>
             
-            <div class="architecture-diagram p-8 mb-12">
+            <div class="architecture-diagram p-4 md:p-8 mb-12 relative">
                 <div class="text-center mb-8">
-                    <h3 class="text-2xl font-bold text-primary">Click on any component to see details</h3>
+                    <h3 class="text-2xl font-bold text-primary">Cloud-Native Microservices Architecture</h3>
                 </div>
                 
                 <div class="architecture-grid">
@@ -352,7 +382,7 @@
                             <h4 class="font-bold text-center"><i class="fas fa-desktop mr-2"></i> Frontend Layer</h4>
                         </div>
                         <div class="p-4">
-                            <div class="flex justify-between items-center">
+                            <div class="flex flex-wrap justify-center gap-2">
                                 <span class="tech-badge bg-blue-100 text-blue-800">React</span>
                                 <span class="tech-badge bg-blue-100 text-blue-800">React Native</span>
                                 <span class="tech-badge bg-blue-100 text-blue-800">Tailwind CSS</span>
@@ -440,7 +470,7 @@
                             <h4 class="font-bold text-center"><i class="fas fa-database mr-2"></i> Data Layer</h4>
                         </div>
                         <div class="p-4">
-                            <div class="flex justify-between items-center">
+                            <div class="flex flex-wrap justify-center gap-2">
                                 <span class="tech-badge bg-gray-200 text-gray-800">PostgreSQL</span>
                                 <span class="tech-badge bg-gray-200 text-gray-800">MongoDB</span>
                                 <span class="tech-badge bg-gray-200 text-gray-800">S3</span>
@@ -450,186 +480,117 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="text-center">
-                <button class="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-secondary transition">
-                    <i class="fas fa-download mr-2"></i> Download Architecture Diagram
-                </button>
-            </div>
         </section>
 
         <!-- Tech Stack Section -->
-        <section id="tech" class="mb-20">
+        <section id="tech" class="mb-20 bg-white rounded-2xl shadow-xl p-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold mb-4">Technology Stack</h2>
-                <div class="w-20 h-1 bg-primary mx-auto"></div>
+                <div class="w-20 h-1 bg-primary mx-auto rounded-full"></div>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white p-6 rounded-xl shadow-lg">
+                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
                     <h3 class="text-xl font-bold mb-4 text-primary">Frontend</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            React.js & Next.js
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>React.js & Next.js</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            React Native
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>React Native</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            Tailwind CSS
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>Tailwind CSS</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            WebRTC for video
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>WebRTC for video</span>
                         </li>
                     </ul>
                 </div>
                 
-                <div class="bg-white p-6 rounded-xl shadow-lg">
+                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
                     <h3 class="text-xl font-bold mb-4 text-primary">Backend</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            Node.js & Python
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>Node.js & Python</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            Express & FastAPI
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>Express & FastAPI</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            Kubernetes
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>Kubernetes</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            Docker Containers
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>Docker Containers</span>
                         </li>
                     </ul>
                 </div>
                 
-                <div class="bg-white p-6 rounded-xl shadow-lg">
+                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
                     <h3 class="text-xl font-bold mb-4 text-primary">AI/ML</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            TensorFlow & PyTorch
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>TensorFlow & PyTorch</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            OpenAI GPT-4
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>OpenAI GPT-4</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            AWS Rekognition
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>AWS Rekognition</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            Hugging Face Transformers
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>Hugging Face Transformers</span>
                         </li>
                     </ul>
                 </div>
                 
-                <div class="bg-white p-6 rounded-xl shadow-lg">
+                <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
                     <h3 class="text-xl font-bold mb-4 text-primary">Data & Infra</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            PostgreSQL & MongoDB
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>PostgreSQL & MongoDB</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            AWS S3 & CloudFront
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>AWS S3 & CloudFront</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            ElasticSearch
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>ElasticSearch</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            Terraform & GitHub Actions
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span>Terraform & GitHub Actions</span>
                         </li>
                     </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- AI Tools Section -->
-        <section id="ai" class="mb-20">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-4">AI Development Tools</h2>
-                <div class="w-20 h-1 bg-primary mx-auto"></div>
-                <p class="text-gray-600 max-w-2xl mx-auto mt-4">Leverage these AI-powered tools to accelerate development of each component</p>
-            </div>
-            
-            <div class="ai-tools-grid">
-                <div class="ai-tool-card">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-                            <i class="fab fa-github text-white text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-primary">GitHub Copilot</h3>
-                    </div>
-                    <p class="text-gray-600 mb-3">AI pair programmer that suggests code in real-time.</p>
-                    <div class="bg-blue-50 p-3 rounded-lg">
-                        <p class="text-sm text-blue-800"><span class="font-bold">Use For:</span> Frontend components, API endpoints, database queries</p>
-                    </div>
-                </div>
-                
-                <div class="ai-tool-card">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-code text-white text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-primary">Tabnine</h3>
-                    </div>
-                    <p class="text-gray-600 mb-3">AI assistant that predicts and suggests code completions.</p>
-                    <div class="bg-green-50 p-3 rounded-lg">
-                        <p class="text-sm text-green-800"><span class="font-bold">Use For:</span> Algorithm implementation, boilerplate code generation</p>
-                    </div>
-                </div>
-                
-                <div class="ai-tool-card">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-brain text-white text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-primary">Amazon CodeWhisperer</h3>
-                    </div>
-                    <p class="text-gray-600 mb-3">Generates code suggestions based on your comments and code.</p>
-                    <div class="bg-purple-50 p-3 rounded-lg">
-                        <p class="text-sm text-purple-800"><span class="font-bold">Use For:</span> Cloud infrastructure code, security implementations</p>
-                    </div>
-                </div>
-                
-                <div class="ai-tool-card">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-robot text-white text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-primary">CodeGPT</h3>
-                    </div>
-                    <p class="text-gray-600 mb-3">AI pair programmer with context-aware suggestions.</p>
-                    <div class="bg-yellow-50 p-3 rounded-lg">
-                        <p class="text-sm text-yellow-800"><span class="font-bold">Use For:</span> Complex algorithms, AI model integration</p>
-                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Roadmap Section -->
-        <section id="roadmap" class="mb-20">
+        <section id="roadmap" class="mb-20 bg-white rounded-2xl shadow-xl p-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold mb-4">Implementation Roadmap</h2>
-                <div class="w-20 h-1 bg-primary mx-auto"></div>
+                <div class="w-20 h-1 bg-primary mx-auto rounded-full"></div>
             </div>
             
             <div class="max-w-4xl mx-auto">
                 <div class="timeline-item">
-                    <div class="bg-white p-6 rounded-xl shadow-lg">
-                        <div class="text-primary font-bold mb-2">Phase 1: Foundation (Months 1-3)</div>
+                    <div class="bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl border border-blue-100">
+                        <div class="text-primary font-bold mb-2 text-lg">Phase 1: Foundation (Months 1-3)</div>
                         <ul class="list-disc pl-5 text-gray-600">
                             <li>Containerize existing MVP with Docker</li>
                             <li>Implement Auth and Profile microservices</li>
@@ -640,8 +601,8 @@
                 </div>
                 
                 <div class="timeline-item">
-                    <div class="bg-white p-6 rounded-xl shadow-lg">
-                        <div class="text-primary font-bold mb-2">Phase 2: AI Integration (Months 4-6)</div>
+                    <div class="bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl border border-blue-100">
+                        <div class="text-primary font-bold mb-2 text-lg">Phase 2: AI Integration (Months 4-6)</div>
                         <ul class="list-disc pl-5 text-gray-600">
                             <li>Build resume parser with NLP extraction</li>
                             <li>Implement VCV scoring with computer vision</li>
@@ -652,8 +613,8 @@
                 </div>
                 
                 <div class="timeline-item">
-                    <div class="bg-white p-6 rounded-xl shadow-lg">
-                        <div class="text-primary font-bold mb-2">Phase 3: Advanced Features (Months 7-9)</div>
+                    <div class="bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl border border-blue-100">
+                        <div class="text-primary font-bold mb-2 text-lg">Phase 3: Advanced Features (Months 7-9)</div>
                         <ul class="list-disc pl-5 text-gray-600">
                             <li>Blockchain credential verification</li>
                             <li>Real-time chat and notifications</li>
@@ -664,8 +625,8 @@
                 </div>
                 
                 <div class="timeline-item">
-                    <div class="bg-white p-6 rounded-xl shadow-lg">
-                        <div class="text-primary font-bold mb-2">Phase 4: Optimization & Scaling (Months 10-12)</div>
+                    <div class="bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl border border-blue-100">
+                        <div class="text-primary font-bold mb-2 text-lg">Phase 4: Optimization & Scaling (Months 10-12)</div>
                         <ul class="list-disc pl-5 text-gray-600">
                             <li>Performance optimization</li>
                             <li>Auto-scaling implementation</li>
@@ -679,31 +640,31 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white py-12">
+    <footer class="bg-gradient-to-r from-primary to-secondary text-white py-12">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
                     <h3 class="text-xl font-bold mb-4">NYSM Platform</h3>
-                    <p class="text-gray-400">Next-generation recruitment platform powered by AI and cloud-native architecture.</p>
+                    <p class="text-blue-100">Next-generation recruitment platform powered by AI and cloud-native architecture.</p>
                 </div>
                 
                 <div>
                     <h4 class="font-bold mb-4">Quick Links</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white">Architecture Overview</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Technical Documentation</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">API Reference</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Case Studies</a></li>
+                        <li><a href="#overview" class="text-blue-100 hover:text-white transition-colors">Overview</a></li>
+                        <li><a href="#architecture" class="text-blue-100 hover:text-white transition-colors">Architecture</a></li>
+                        <li><a href="#tech" class="text-blue-100 hover:text-white transition-colors">Tech Stack</a></li>
+                        <li><a href="#roadmap" class="text-blue-100 hover:text-white transition-colors">Roadmap</a></li>
                     </ul>
                 </div>
                 
                 <div>
                     <h4 class="font-bold mb-4">Resources</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white">Developer Portal</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">GitHub Repository</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">System Status</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Security</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition-colors">Developer Portal</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition-colors">API Documentation</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition-colors">System Status</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition-colors">Security</a></li>
                     </ul>
                 </div>
                 
@@ -711,31 +672,31 @@
                     <h4 class="font-bold mb-4">Contact</h4>
                     <ul class="space-y-2">
                         <li class="flex items-center">
-                            <i class="fas fa-envelope text-gray-400 mr-2"></i>
+                            <i class="fas fa-envelope text-blue-100 mr-2"></i>
                             <span>info@nysm-platform.com</span>
                         </li>
                         <li class="flex items-center">
-                            <i class="fas fa-phone text-gray-400 mr-2"></i>
+                            <i class="fas fa-phone text-blue-100 mr-2"></i>
                             <span>+1 (555) 123-4567</span>
                         </li>
                         <li class="flex items-center">
-                            <i class="fab fa-github text-gray-400 mr-2"></i>
+                            <i class="fab fa-github text-blue-100 mr-2"></i>
                             <span>github.com/nysm-platform</span>
                         </li>
                     </ul>
                 </div>
             </div>
             
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
+            <div class="border-t border-blue-300 mt-8 pt-8 text-center text-blue-100">
                 <p>&copy; 2023 NYSM Platform. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Modal Templates -->
-    <!-- Frontend Modal -->
+    <!-- Component Modals -->
+    <!-- Frontend Layer Modal -->
     <div id="frontend-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-2xl font-bold text-primary">Frontend Layer</h3>
@@ -763,65 +724,51 @@
                 </p>
                 
                 <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Integration:</h4>
-                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                        <h5 class="font-bold text-primary mb-2">AI-Guided Video Recording:</h5>
-                        <p class="text-gray-700 mb-3">
-                            Using TensorFlow.js and computer vision algorithms to provide real-time feedback during video CV recording:
-                        </p>
-                        <pre class="code-block">
-<span class="code-keyword">import</span> { FaceDetector } <span class="code-keyword">from</span> <span class="code-string">'@tensorflow-models/face-detection'</span>;
-<span class="code-keyword">import</span> { loadEmotionModel } <span class="code-keyword">from</span> <span class="code-string">'@ai/emotion-recognition'</span>;
-
-<span class="code-keyword">const</span> <span class="code-function">analyzeVideo</span> = (videoStream) => {
-    <span class="code-keyword">const</span> faceDetector = <span class="code-keyword">await</span> FaceDetector.load();
-    <span class="code-keyword">const</span> emotionModel = <span class="code-keyword">await</span> loadEmotionModel();
+                    <h4 class="font-bold mb-3">Key Features:</h4>
+                    <ul class="space-y-2 mb-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Responsive design for all device sizes</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Real-time video processing with WebRTC</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>State management with Redux Toolkit</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Internationalization support</span>
+                        </li>
+                    </ul>
+                    
+                    <h5 class="font-bold text-primary mb-2">AI Integration:</h5>
+                    <p class="text-gray-700 mb-3">
+                        Using TensorFlow.js for real-time feedback during video CV recording:
+                    </p>
+                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
+// Sample code for AI video feedback
+const analyzeVideo = (videoStream) => {
+    const faceDetector = new FaceDetector();
+    const emotionModel = loadEmotionRecognitionModel();
     
-    <span class="code-comment">// Analyze frames</span>
     setInterval(() => {
-        <span class="code-keyword">const</span> frame = captureFrame(videoStream);
-        <span class="code-keyword">const</span> faces = faceDetector.detect(frame);
+        const frame = captureFrame(videoStream);
+        const faces = faceDetector.detect(frame);
         
-        <span class="code-keyword">if</span>(faces.length > 0) {
-            <span class="code-keyword">const</span> emotion = emotionModel.predict(faces[0]);
-            <span class="code-keyword">const</span> feedback = generateFeedback(emotion);
+        if(faces.length > 0) {
+            const emotion = emotionModel.predict(faces[0]);
+            const feedback = generateFeedback(emotion);
             updateUI(feedback);
         }
     }, 1000);
 };</pre>
-                    </div>
-                </div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Development Tools:</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fab fa-github text-white"></i>
-                                </div>
-                                <h5 class="font-bold">GitHub Copilot</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Generate React component templates and UI patterns with AI suggestions. Creates responsive layouts with Tailwind CSS classes.
-                            </p>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-code text-white"></i>
-                                </div>
-                                <h5 class="font-bold">Tabnine</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Autocomplete complex state management logic and WebRTC integration code. Suggests performance optimizations for video handling.
-                            </p>
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">Close</button>
+                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
                 </div>
             </div>
         </div>
@@ -829,10 +776,10 @@
 
     <!-- AI Engine Modal -->
     <div id="ai-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-primary">AI Engine</h3>
+                    <h3 class="text-2xl font-bold text-ai">AI Engine</h3>
                     <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
@@ -863,160 +810,86 @@
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
                             <div>
                                 <h5 class="font-bold">Resume Parsing & Summarization</h5>
-                                <p class="text-gray-600">NLP models extract and summarize key information from resumes</p>
+                                <p class="text-gray-600">NLP models extract and summarize key information from resumes using spaCy and custom transformers</p>
                             </div>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
                             <div>
                                 <h5 class="font-bold">Video CV Analysis</h5>
-                                <p class="text-gray-600">Computer vision models analyze facial expressions, tone, and content</p>
+                                <p class="text-gray-600">Computer vision models analyze facial expressions, tone, and content using OpenCV and MediaPipe</p>
                             </div>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
                             <div>
                                 <h5 class="font-bold">Smart Matching</h5>
-                                <p class="text-gray-600">Vector embeddings match candidates to jobs based on semantic similarity</p>
+                                <p class="text-gray-600">Vector embeddings match candidates to jobs based on semantic similarity using BERT embeddings</p>
                             </div>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
                             <div>
                                 <h5 class="font-bold">Career Copilot</h5>
-                                <p class="text-gray-600">GPT-4 powered chatbot for personalized career guidance</p>
+                                <p class="text-gray-600">GPT-4 powered chatbot for personalized career guidance with custom fine-tuning</p>
                             </div>
                         </li>
                     </ul>
                 </div>
                 
                 <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Development Tools:</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-brain text-white"></i>
+                    <h4 class="font-bold mb-3">AI Development Workflow:</h4>
+                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                        <div class="flex flex-wrap justify-between mb-4">
+                            <div class="text-center p-2 w-1/4">
+                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-database text-white"></i>
                                 </div>
-                                <h5 class="font-bold">Amazon CodeWhisperer</h5>
+                                <p class="text-sm font-medium">Data Collection</p>
                             </div>
-                            <p class="text-sm text-gray-600">
-                                Generate machine learning pipeline code and data preprocessing scripts. Creates boilerplate for model training and evaluation.
-                            </p>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-robot text-white"></i>
+                            <div class="text-center p-2 w-1/4">
+                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-sliders-h text-white"></i>
                                 </div>
-                                <h5 class="font-bold">CodeGPT</h5>
+                                <p class="text-sm font-medium">Model Training</p>
                             </div>
-                            <p class="text-sm text-gray-600">
-                                Develop complex NLP algorithms and transformer model integrations. Suggests optimizations for model inference performance.
-                            </p>
+                            <div class="text-center p-2 w-1/4">
+                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-vial text-white"></i>
+                                </div>
+                                <p class="text-sm font-medium">Testing</p>
+                            </div>
+                            <div class="text-center p-2 w-1/4">
+                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-rocket text-white"></i>
+                                </div>
+                                <p class="text-sm font-medium">Deployment</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+                    
+                    <h5 class="font-bold text-primary mb-2">Model Training Example:</h5>
+                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
+# Resume parsing model training
+import tensorflow as tf
+from transformers import BertTokenizer, TFBertForTokenClassification
 
-    <!-- Auth Service Modal -->
-    <div id="auth-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-primary">Authentication Service</h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-6 p-4 bg-green-50 rounded-lg">
-                    <h4 class="font-bold mb-2">Tech Stack:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-green-100 text-green-800">Node.js</span>
-                        <span class="tech-badge bg-green-100 text-green-800">Express</span>
-                        <span class="tech-badge bg-green-100 text-green-800">JWT</span>
-                        <span class="tech-badge bg-green-100 text-green-800">OAuth2</span>
-                        <span class="tech-badge bg-green-100 text-green-800">Redis</span>
-                    </div>
-                </div>
-                
-                <h4 class="font-bold mb-2">Implementation Details:</h4>
-                <p class="mb-4 text-gray-700">
-                    The Auth Service handles all authentication and authorization for the platform. It supports multiple
-                    login methods including OAuth2 for social logins, OTP-based authentication, and traditional email/password.
-                </p>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">Key Features:</h4>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Multi-factor Authentication</h5>
-                                <p class="text-gray-600">SMS, Email, and Authenticator App support</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Role-Based Access Control</h5>
-                                <p class="text-gray-600">Different permissions for job seekers, employers, and admins</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Session Management</h5>
-                                <p class="text-gray-600">Secure JWT token handling with refresh tokens</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Social Login Integration</h5>
-                                <p class="text-gray-600">LinkedIn, Google, and Microsoft authentication</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Development Tools:</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fab fa-github text-white"></i>
-                                </div>
-                                <h5 class="font-bold">GitHub Copilot</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Generate secure authentication middleware and OAuth2 implementation patterns. Creates boilerplate for RBAC systems.
-                            </p>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-shield-alt text-white"></i>
-                                </div>
-                                <h5 class="font-bold">Amazon CodeWhisperer</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Develop security-hardened authentication flows with AI suggestions. Creates implementations for encryption and token management.
-                            </p>
-                        </div>
-                    </div>
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = TFBertForTokenClassification.from_pretrained('bert-base-uncased', num_labels=10)
+
+# Custom training loop
+for epoch in range(3):
+    for batch in train_dataset:
+        inputs = tokenizer(batch['text'], padding=True, truncation=True, return_tensors="tf")
+        with tf.GradientTape() as tape:
+            outputs = model(inputs)
+            loss = outputs.loss
+        gradients = tape.gradient(loss, model.trainable_variables)
+        optimizer.apply_gradients(zip(gradients, model.trainable_variables))</pre>
                 </div>
                 
                 <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">Close</button>
+                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
                 </div>
             </div>
         </div>
@@ -1024,10 +897,10 @@
 
     <!-- Profile Service Modal -->
     <div id="profile-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-primary">Profile Service</h3>
+                    <h3 class="text-2xl font-bold text-profile">Profile Service</h3>
                     <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
@@ -1038,83 +911,65 @@
                     <div class="flex flex-wrap gap-2">
                         <span class="tech-badge bg-purple-100 text-purple-800">Python</span>
                         <span class="tech-badge bg-purple-100 text-purple-800">FastAPI</span>
-                        <span class="tech-badge bg-purple-100 text-purple-800">PostgreSQL</span>
                         <span class="tech-badge bg-purple-100 text-purple-800">MongoDB</span>
-                        <span class="tech-badge bg-purple-100 text-purple-800">SpaCy</span>
+                        <span class="tech-badge bg-purple-100 text-purple-800">Redis</span>
                     </div>
                 </div>
                 
                 <h4 class="font-bold mb-2">Implementation Details:</h4>
                 <p class="mb-4 text-gray-700">
-                    The Profile Service manages all user profile data including personal information, work history,
-                    education, skills, and preferences. It integrates with the AI Engine for resume parsing and 
-                    profile enrichment.
+                    The Profile Service manages all user profile data including personal information, work history, 
+                    education, skills, and preferences. It uses MongoDB for flexible document storage and Redis for 
+                    caching frequently accessed profiles.
                 </p>
                 
                 <div class="mb-6">
                     <h4 class="font-bold mb-3">Key Features:</h4>
-                    <ul class="space-y-3">
+                    <ul class="space-y-2 mb-4">
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Resume Parsing & Import</h5>
-                                <p class="text-gray-600">Automated extraction from PDF/DOCX files</p>
-                            </div>
+                            <span>Profile creation and management API</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">LinkedIn Integration</h5>
-                                <p class="text-gray-600">One-click import of LinkedIn profiles</p>
-                            </div>
+                            <span>Skill tagging and verification system</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Skill Gap Analysis</h5>
-                                <p class="text-gray-600">Identify missing skills for target roles</p>
-                            </div>
+                            <span>Privacy controls for profile visibility</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                            <div>
-                                <h5 class="font-bold">Profile Completeness</h5>
-                                <p class="text-gray-600">Guided profile completion with AI suggestions</p>
-                            </div>
+                            <span>Profile completeness scoring</span>
                         </li>
                     </ul>
-                </div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Development Tools:</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-code text-white"></i>
-                                </div>
-                                <h5 class="font-bold">Tabnine</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Implement complex resume parsing algorithms with AI suggestions. Creates data transformation pipelines for profile enrichment.
-                            </p>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-robot text-white"></i>
-                                </div>
-                                <h5 class="font-bold">CodeGPT</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Develop NLP-powered profile analysis features. Generates code for skill extraction and gap analysis algorithms.
-                            </p>
-                        </div>
-                    </div>
+                    
+                    <h5 class="font-bold text-primary mb-2">Profile Update Endpoint:</h5>
+                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
+# Profile update API endpoint
+@app.put("/profiles/{user_id}")
+async def update_profile(user_id: str, profile: ProfileUpdate):
+    # Validate input
+    if not validate_profile_data(profile):
+        raise HTTPException(status_code=400, detail="Invalid profile data")
+    
+    # Update profile in MongoDB
+    result = db.profiles.update_one(
+        {"user_id": user_id},
+        {"$set": profile.dict(exclude_unset=True)}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    
+    # Invalidate cache
+    cache.delete(f"profile:{user_id}")
+    
+    return {"message": "Profile updated successfully"}</pre>
                 </div>
                 
                 <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">Close</button>
+                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
                 </div>
             </div>
         </div>
@@ -1122,10 +977,10 @@
 
     <!-- VCV Service Modal -->
     <div id="vvc-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-primary">Video CV (VCV) Service</h3>
+                    <h3 class="text-2xl font-bold text-vcv">Video CV Service</h3>
                     <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
@@ -1135,8 +990,8 @@
                     <h4 class="font-bold mb-2">Tech Stack:</h4>
                     <div class="flex flex-wrap gap-2">
                         <span class="tech-badge bg-red-100 text-red-800">Go</span>
+                        <span class="tech-badge bg-red-100 text-red-800">gRPC</span>
                         <span class="tech-badge bg-red-100 text-red-800">FFmpeg</span>
-                        <span class="tech-badge bg-red-100 text-red-800">WebRTC</span>
                         <span class="tech-badge bg-red-100 text-red-800">AWS S3</span>
                         <span class="tech-badge bg-red-100 text-red-800">OpenCV</span>
                     </div>
@@ -1144,55 +999,63 @@
                 
                 <h4 class="font-bold mb-2">Implementation Details:</h4>
                 <p class="mb-4 text-gray-700">
-                    The VCV Service handles all aspects of video CV creation, storage, and processing. It provides
-                    an AI-guided wizard to help job seekers create professional video resumes with real-time feedback.
+                    The Video CV Service handles video recording, processing, storage, and streaming of video resumes. 
+                    It uses Go for high-performance video processing and gRPC for efficient communication with other services.
                 </p>
                 
-                <div class="service-diagram">
-                    <div class="service-row">
-                        <div class="service-box bg-blue-500 text-white">Video Recording</div>
-                        <i class="fas fa-arrow-right text-gray-500 text-2xl mx-4 mt-3"></i>
-                        <div class="service-box bg-green-500 text-white">AI Analysis</div>
-                        <i class="fas fa-arrow-right text-gray-500 text-2xl mx-4 mt-3"></i>
-                        <div class="service-box bg-purple-500 text-white">Storage</div>
-                    </div>
-                    <div class="service-row">
-                        <div class="service-box bg-yellow-500 text-white">Transcoding</div>
-                        <i class="fas fa-arrow-right text-gray-500 text-2xl mx-4 mt-3"></i>
-                        <div class="service-box bg-red-500 text-white">Delivery</div>
-                    </div>
-                </div>
-                
                 <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Development Tools:</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-brain text-white"></i>
-                                </div>
-                                <h5 class="font-bold">Amazon CodeWhisperer</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Generate efficient video processing pipelines with FFmpeg. Creates optimized storage strategies for large video files.
-                            </p>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-robot text-white"></i>
-                                </div>
-                                <h5 class="font-bold">CodeGPT</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Develop computer vision algorithms for real-time video analysis. Generates code for facial expression and speech analysis.
-                            </p>
-                        </div>
-                    </div>
+                    <h4 class="font-bold mb-3">Key Features:</h4>
+                    <ul class="space-y-2 mb-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Real-time video recording with WebRTC integration</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Video compression and optimization</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Video segmentation for quick navigation</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Thumbnail generation and preview</span>
+                        </li>
+                    </ul>
+                    
+                    <h5 class="font-bold text-primary mb-2">Video Processing Pipeline:</h5>
+                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
+// Process video using FFmpeg
+func processVideo(inputPath string, outputPath string) error {
+    cmd := exec.Command("ffmpeg",
+        "-i", inputPath,
+        "-c:v", "libx264",
+        "-crf", "23",
+        "-preset", "medium",
+        "-c:a", "aac",
+        "-b:a", "128k",
+        "-movflags", "+faststart",
+        outputPath,
+    )
+    
+    var stderr bytes.Buffer
+    cmd.Stderr = &stderr
+    
+    if err := cmd.Run(); err != nil {
+        return fmt.Errorf("ffmpeg error: %v, %s", err, stderr.String())
+    }
+    return nil
+}
+
+// Generate thumbnails
+func generateThumbnails(videoPath string) ([]string, error) {
+    // Implementation using OpenCV
+}</pre>
                 </div>
                 
                 <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">Close</button>
+                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
                 </div>
             </div>
         </div>
@@ -1200,10 +1063,10 @@
 
     <!-- Job Service Modal -->
     <div id="job-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-primary">Job Service</h3>
+                    <h3 class="text-2xl font-bold text-job">Job Service</h3>
                     <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
@@ -1214,48 +1077,65 @@
                     <div class="flex flex-wrap gap-2">
                         <span class="tech-badge bg-indigo-100 text-indigo-800">Java</span>
                         <span class="tech-badge bg-indigo-100 text-indigo-800">Spring Boot</span>
-                        <span class="tech-badge bg-indigo-100 text-indigo-800">MySQL</span>
-                        <span class="tech-badge bg-indigo-100 text-indigo-800">Kafka</span>
-                        <span class="tech-badge bg-indigo-100 text-indigo-800">Redis</span>
+                        <span class="tech-badge bg-indigo-100 text-indigo-800">PostgreSQL</span>
+                        <span class="tech-badge bg-indigo-100 text-indigo-800">RabbitMQ</span>
                     </div>
                 </div>
                 
                 <h4 class="font-bold mb-2">Implementation Details:</h4>
                 <p class="mb-4 text-gray-700">
-                    The Job Service manages all job-related operations including job posting, application tracking,
-                    and candidate management. It integrates with external ATS systems and provides analytics for employers.
+                    The Job Service manages all aspects of job listings including creation, modification, publishing, 
+                    and expiration. It integrates with employer systems and provides rich APIs for job management.
                 </p>
                 
                 <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Development Tools:</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fab fa-github text-white"></i>
-                                </div>
-                                <h5 class="font-bold">GitHub Copilot</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Generate Spring Boot REST APIs and database repository patterns. Creates boilerplate for job posting and application tracking.
-                            </p>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-code text-white"></i>
-                                </div>
-                                <h5 class="font-bold">Tabnine</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Implement complex workflow logic for application pipelines. Suggests optimizations for high-volume job processing.
-                            </p>
-                        </div>
-                    </div>
+                    <h4 class="font-bold mb-3">Key Features:</h4>
+                    <ul class="space-y-2 mb-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Job creation wizard with templates</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Advanced job approval workflows</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Job recommendation engine integration</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Application tracking system</span>
+                        </li>
+                    </ul>
+                    
+                    <h5 class="font-bold text-primary mb-2">Job Creation API:</h5>
+                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
+// Create job endpoint
+@PostMapping("/jobs")
+public ResponseEntity<Job> createJob(@RequestBody JobRequest jobRequest) {
+    // Validate input
+    if (!jobValidator.isValid(jobRequest)) {
+        throw new InvalidJobException("Invalid job data");
+    }
+    
+    // Map to entity
+    Job job = jobMapper.toEntity(jobRequest);
+    
+    // Save to database
+    Job savedJob = jobRepository.save(job);
+    
+    // Publish job created event
+    eventPublisher.publishJobCreatedEvent(savedJob);
+    
+    return ResponseEntity
+            .created(URI.create("/jobs/" + savedJob.getId()))
+            .body(savedJob);
+}</pre>
                 </div>
                 
                 <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">Close</button>
+                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
                 </div>
             </div>
         </div>
@@ -1263,10 +1143,10 @@
 
     <!-- Search Service Modal -->
     <div id="search-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-primary">Search Service</h3>
+                    <h3 class="text-2xl font-bold text-search">Search Service</h3>
                     <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
@@ -1277,85 +1157,68 @@
                     <div class="flex flex-wrap gap-2">
                         <span class="tech-badge bg-pink-100 text-pink-800">ElasticSearch</span>
                         <span class="tech-badge bg-pink-100 text-pink-800">Python</span>
-                        <span class="tech-badge bg-pink-100 text-pink-800">React</span>
-                        <span class="tech-badge bg-pink-100 text-pink-800">BERT</span>
-                        <span class="tech-badge bg-pink-100 text-pink-800">AWS OpenSearch</span>
+                        <span class="tech-badge bg-pink-100 text-pink-800">FastAPI</span>
+                        <span class="tech-badge bg-pink-100 text-pink-800">Redis</span>
                     </div>
                 </div>
                 
                 <h4 class="font-bold mb-2">Implementation Details:</h4>
                 <p class="mb-4 text-gray-700">
-                    Advanced search service combining keyword and semantic search with AI-powered ranking. Indexes candidates, jobs, and skills using vector embeddings for contextual matching.
+                    The Search Service provides advanced search capabilities across candidates, jobs, and companies. 
+                    It uses ElasticSearch for full-text search with semantic understanding and relevance ranking.
                 </p>
                 
                 <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Integration:</h4>
-                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                        <h5 class="font-bold text-primary mb-2">Semantic Search with NLP:</h5>
-                        <p class="text-gray-700 mb-3">
-                            Using transformer models to understand search intent and context:
-                        </p>
-                        <pre class="code-block">
-<span class="code-keyword">from</span> sentence_transformers <span class="code-keyword">import</span> SentenceTransformer
-<span class="code-keyword">from</span> elasticsearch <span class="code-keyword">import</span> Elasticsearch
-
-<span class="code-keyword">class</span> <span class="code-function">SemanticSearch</span>:
-    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(self):
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
-        self.es = Elasticsearch()
-    
-    <span class="code-keyword">def</span> <span class="code-function">search</span>(self, query: str, top_k: int = 10):
-        <span class="code-comment"># Generate vector embedding</span>
-        query_embedding = self.model.encode(query).tolist()
-        
-        <span class="code-comment"># Vector search query</span>
-        script_query = {
-            "script_score": {
-                "query": {"match_all": {}},
-                "script": {
-                    "source": "cosineSimilarity(params.query_vector, 'embedding') + 1.0",
-                    "params": {"query_vector": query_embedding}
-                }
-            }
+                    <h4 class="font-bold mb-3">Key Features:</h4>
+                    <ul class="space-y-2 mb-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Semantic search with NLP understanding</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Faceted search with filters</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Personalized search results</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Autocomplete and suggestion</span>
+                        </li>
+                    </ul>
+                    
+                    <h5 class="font-bold text-primary mb-2">Search Query Example:</h5>
+                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
+# ElasticSearch query for candidate search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "software engineer python",
+            "fields": ["skills^3", "experience^2", "summary"],
+            "type": "cross_fields"
+          }
         }
-        
-        <span class="code-keyword">return</span> self.es.search(
-            index="candidates",
-            body={"query": script_query, "size": top_k}
-        )</pre>
-                    </div>
-                </div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Development Tools:</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-brain text-white"></i>
-                                </div>
-                                <h5 class="font-bold">Amazon CodeWhisperer</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Generate ElasticSearch queries and indexing strategies. Creates efficient vector search implementations.
-                            </p>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-robot text-white"></i>
-                                </div>
-                                <h5 class="font-bold">CodeGPT</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Develop semantic search algorithms using transformer models. Generates code for query understanding and relevance ranking.
-                            </p>
-                        </div>
-                    </div>
+      ],
+      "filter": [
+        { "term": { "status": "active" } },
+        { "range": { "experience_years": { "gte": 3 } } }
+      ]
+    }
+  },
+  "sort": [
+    { "_score": { "order": "desc" } },
+    { "relevance_score": { "order": "desc" } }
+  ]
+}</pre>
                 </div>
                 
                 <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">Close</button>
+                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
                 </div>
             </div>
         </div>
@@ -1363,10 +1226,10 @@
 
     <!-- Notification Service Modal -->
     <div id="notification-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-primary">Notification Service</h3>
+                    <h3 class="text-2xl font-bold text-notification">Notification Service</h3>
                     <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
@@ -1376,70 +1239,83 @@
                     <h4 class="font-bold mb-2">Tech Stack:</h4>
                     <div class="flex flex-wrap gap-2">
                         <span class="tech-badge bg-teal-100 text-teal-800">Node.js</span>
-                        <span class="tech-badge bg-teal-100 text-teal-800">Firebase</span>
-                        <span class="tech-badge bg-teal-100 text-teal-800">WebSocket</span>
+                        <span class="tech-badge bg-teal-100 text-teal-800">Express</span>
                         <span class="tech-badge bg-teal-100 text-teal-800">Redis</span>
-                        <span class="tech-badge bg-teal-100 text-teal-800">NLP</span>
+                        <span class="tech-badge bg-teal-100 text-teal-800">Socket.IO</span>
+                        <span class="tech-badge bg-teal-100 text-teal-800">AWS SNS</span>
                     </div>
                 </div>
                 
                 <h4 class="font-bold mb-2">Implementation Details:</h4>
                 <p class="mb-4 text-gray-700">
-                    Real-time notification system with AI-powered personalization and delivery optimization. Supports push, email, SMS, and in-app notifications with preference management.
+                    The Notification Service handles all platform notifications including real-time alerts, 
+                    email notifications, SMS messages, and push notifications. It provides a unified interface 
+                    for delivering notifications through multiple channels.
                 </p>
                 
                 <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Integration:</h4>
-                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                        <h5 class="font-bold text-primary mb-2">Intelligent Delivery Optimization:</h5>
-                        <pre class="code-block">
-<span class="code-keyword">const</span> optimizeNotification = (user, event) => {
-    <span class="code-comment">// Predict optimal delivery channel and time</span>
-    <span class="code-keyword">const</span> preferredChannel = aiPredictChannel(user.communicationPatterns);
-    <span class="code-keyword">const</span> optimalTime = aiPredictOptimalTime(user.timezone, user.activityHistory);
+                    <h4 class="font-bold mb-3">Key Features:</h4>
+                    <ul class="space-y-2 mb-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Real-time in-app notifications</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Email templates with personalization</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>SMS and push notification delivery</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Notification preferences management</span>
+                        </li>
+                    </ul>
+                    
+                    <h5 class="font-bold text-primary mb-2">Notification Sending Logic:</h5>
+                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
+// Send notification to user
+async function sendNotification(userId, message, type) {
+    // Get user preferences
+    const preferences = await getUserPreferences(userId);
     
-    <span class="code-comment">// Personalize content with NLP</span>
-    <span class="code-keyword">const</span> personalizedContent = nlpRephrase(event.template, user.profile);
+    // Check if user wants this type of notification
+    if (!preferences[type]) return;
     
-    <span class="code-keyword">return</span> {
-        channel: preferredChannel,
-        deliverAt: optimalTime,
-        content: personalizedContent
-    };
-};</pre>
-                    </div>
-                </div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Development Tools:</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-code text-white"></i>
-                                </div>
-                                <h5 class="font-bold">Tabnine</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Implement real-time delivery logic with WebSocket and Firebase. Autocompletes complex notification routing code.
-                            </p>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-robot text-white"></i>
-                                </div>
-                                <h5 class="font-bold">CodeGPT</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Develop NLP models for notification personalization. Generates context-aware message variations.
-                            </p>
-                        </div>
-                    </div>
+    // Prepare notification channels
+    const channels = [];
+    if (preferences.inApp) channels.push('inApp');
+    if (preferences.email) channels.push('email');
+    if (preferences.sms) channels.push('sms');
+    if (preferences.push) channels.push('push');
+    
+    // Send through selected channels
+    for (const channel of channels) {
+        switch(channel) {
+            case 'inApp':
+                sendInAppNotification(userId, message);
+                break;
+            case 'email':
+                sendEmailNotification(userId, message);
+                break;
+            case 'sms':
+                sendSmsNotification(userId, message);
+                break;
+            case 'push':
+                sendPushNotification(userId, message);
+                break;
+        }
+    }
+    
+    // Log notification
+    logNotification(userId, message, type, channels);
+}</pre>
                 </div>
                 
                 <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">Close</button>
+                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
                 </div>
             </div>
         </div>
@@ -1447,10 +1323,10 @@
 
     <!-- Verification Service Modal -->
     <div id="verification-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-primary">Verification Service</h3>
+                    <h3 class="text-2xl font-bold text-verification">Verification Service</h3>
                     <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
@@ -1459,89 +1335,71 @@
                 <div class="mb-6 p-4 bg-orange-50 rounded-lg">
                     <h4 class="font-bold mb-2">Tech Stack:</h4>
                     <div class="flex flex-wrap gap-2">
-                        <span class="tech-badge bg-orange-100 text-orange-800">.NET Core</span>
+                        <span class="tech-badge bg-orange-100 text-orange-800">.NET</span>
+                        <span class="tech-badge bg-orange-100 text-orange-800">C#</span>
                         <span class="tech-badge bg-orange-100 text-orange-800">Blockchain</span>
                         <span class="tech-badge bg-orange-100 text-orange-800">AWS KMS</span>
-                        <span class="tech-badge bg-orange-100 text-orange-800">OCR</span>
-                        <span class="tech-badge bg-orange-100 text-orange-800">Checkr API</span>
                     </div>
                 </div>
                 
                 <h4 class="font-bold mb-2">Implementation Details:</h4>
                 <p class="mb-4 text-gray-700">
-                    Secure verification system combining third-party APIs, blockchain technology, and AI validation. Handles identity verification, credential authentication, and background checks.
+                    The Verification Service handles identity verification, credential validation, 
+                    and background checks for both job seekers and employers. It uses blockchain 
+                    technology for tamper-proof verification records.
                 </p>
                 
-                <div class="service-diagram">
-                    <div class="service-row">
-                        <div class="service-box bg-blue-500 text-white">Document Upload</div>
-                        <i class="fas fa-arrow-right text-gray-500 text-2xl mx-4 mt-3"></i>
-                        <div class="service-box bg-purple-500 text-white">AI Validation</div>
-                        <i class="fas fa-arrow-right text-gray-500 text-2xl mx-4 mt-3"></i>
-                        <div class="service-box bg-green-500 text-white">Blockchain Record</div>
-                    </div>
-                </div>
-                
                 <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Integration:</h4>
-                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                        <h5 class="font-bold text-primary mb-2">Document Verification:</h5>
-                        <pre class="code-block">
-<span class="code-keyword">async</span> <span class="code-function">verifyDocument</span>(document) {
-    <span class="code-comment">// OCR extraction</span>
-    <span class="code-keyword">const</span> extractedText = <span class="code-keyword">await</span> ocrEngine.process(document);
+                    <h4 class="font-bold mb-3">Key Features:</h4>
+                    <ul class="space-y-2 mb-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Identity verification with government IDs</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Education and employment verification</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Blockchain-based credential storage</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Background check integration</span>
+                        </li>
+                    </ul>
+                    
+                    <h5 class="font-bold text-primary mb-2">Blockchain Verification:</h5>
+                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
+// Store verification record on blockchain
+public async Task<string> StoreVerificationRecord(VerificationRecord record)
+{
+    // Create transaction
+    var transaction = new Transaction
+    {
+        FromAddress = _config.WalletAddress,
+        ToAddress = record.UserAddress,
+        Value = 0,
+        Data = JsonConvert.SerializeObject(record)
+    };
     
-    <span class="code-comment">// AI validation</span>
-    <span class="code-keyword">const</span> validationResult = <span class="code-keyword">await</span> aiValidator.analyze({
-        text: extractedText,
-        documentType: document.type,
-        image: document.image
-    });
+    // Sign transaction
+    transaction.Sign(_config.PrivateKey);
     
-    <span class="code-comment">// Blockchain notarization</span>
-    <span class="code-keyword">if</span>(validationResult.isValid) {
-        <span class="code-keyword">const</span> txHash = <span class="code-keyword">await</span> blockchain.notarize(
-            document.hash, 
-            user.digitalIdentity
-        );
-        <span class="code-keyword">return</span> { valid: true, txHash };
-    }
+    // Submit to blockchain
+    var client = new BlockchainClient(_config.NodeUrl);
+    var response = await client.SubmitTransaction(transaction);
     
-    <span class="code-keyword">return</span> { valid: false, issues: validationResult.anomalies };
+    if (!response.Success)
+        throw new VerificationException("Failed to store verification record");
+    
+    return response.TransactionHash;
 }</pre>
-                    </div>
-                </div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Development Tools:</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-shield-alt text-white"></i>
-                                </div>
-                                <h5 class="font-bold">Qodo</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Generate secure verification workflows and API integrations. Creates test cases for credential validation edge cases.
-                            </p>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-cubes text-white"></i>
-                                </div>
-                                <h5 class="font-bold">CodeGPT Agents</h5>
-                            </div>
-                            <p class="text-sm text-gray-600">
-                                Develop blockchain integration code and cryptographic functions. Generates smart contract templates for credential verification.
-                            </p>
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">Close</button>
+                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
                 </div>
             </div>
         </div>
@@ -1549,10 +1407,10 @@
 
     <!-- Data Layer Modal -->
     <div id="data-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-primary">Data Layer</h3>
+                    <h3 class="text-2xl font-bold text-data">Data Layer</h3>
                     <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
@@ -1571,46 +1429,203 @@
                 
                 <h4 class="font-bold mb-2">Implementation Details:</h4>
                 <p class="mb-4 text-gray-700">
-                    The Data Layer uses a polyglot persistence approach with different databases optimized for specific
-                    use cases. All data is encrypted at rest and in transit, with strict access controls.
+                    The data layer provides persistence and data management for all services. We use a polyglot persistence approach with different databases for different data types.
                 </p>
                 
                 <div class="mb-6">
-                    <h4 class="font-bold mb-3">AI Development Tools:</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fab fa-github text-white"></i>
-                                </div>
-                                <h5 class="font-bold">GitHub Copilot</h5>
+                    <h4 class="font-bold mb-3">Database Usage:</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-database text-blue-500 mt-1 mr-2"></i>
+                            <div>
+                                <h5 class="font-bold">PostgreSQL</h5>
+                                <p class="text-gray-600">Stores structured relational data like user profiles, job listings, and transactions</p>
                             </div>
-                            <p class="text-sm text-gray-600">
-                                Generate database schema designs and migration scripts. Creates optimized query patterns for different data stores.
-                            </p>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center mb-2">
-                                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-2">
-                                    <i class="fas fa-brain text-white"></i>
-                                </div>
-                                <h5 class="font-bold">Amazon CodeWhisperer</h5>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-database text-green-500 mt-1 mr-2"></i>
+                            <div>
+                                <h5 class="font-bold">MongoDB</h5>
+                                <p class="text-gray-600">Stores unstructured data like user activity logs, chat messages, and document metadata</p>
                             </div>
-                            <p class="text-sm text-gray-600">
-                                Develop data encryption implementations and access control patterns. Creates infrastructure as code for database provisioning.
-                            </p>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-cloud text-orange-500 mt-1 mr-2"></i>
+                            <div>
+                                <h5 class="font-bold">AWS S3</h5>
+                                <p class="text-gray-600">Stores media files including video CVs, documents, and profile images</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-bolt text-red-500 mt-1 mr-2"></i>
+                            <div>
+                                <h5 class="font-bold">Redis</h5>
+                                <p class="text-gray-600">Provides caching and session management for high-performance requirements</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-search text-purple-500 mt-1 mr-2"></i>
+                            <div>
+                                <h5 class="font-bold">ElasticSearch</h5>
+                                <p class="text-gray-600">Powers search functionality and provides analytics capabilities</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mb-6">
+                    <h4 class="font-bold mb-3">Data Architecture:</h4>
+                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                        <div class="flex items-center justify-center mb-4">
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-server text-white"></i>
+                                </div>
+                                <p class="text-sm font-medium">Data Ingestion</p>
+                            </div>
+                            <div class="mx-4 text-blue-500">→</div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-database text-white"></i>
+                                </div>
+                                <p class="text-sm font-medium">Storage</p>
+                            </div>
+                            <div class="mx-4 text-blue-500">→</div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-cogs text-white"></i>
+                                </div>
+                                <p class="text-sm font-medium">Processing</p>
+                            </div>
+                            <div class="mx-4 text-blue-500">→</div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-chart-line text-white"></i>
+                                </div>
+                                <p class="text-sm font-medium">Analytics</p>
+                            </div>
                         </div>
                     </div>
+                    
+                    <h5 class="font-bold text-primary mb-2">Data Processing Pipeline:</h5>
+                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
+# Example data processing with Apache Spark
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder.appName("ResumeProcessing").getOrCreate()
+
+# Load data from S3
+df = spark.read.parquet("s3a://nysm-data/resumes")
+
+# Process and enrich data
+processed_df = (df
+    .withColumn("skills", extract_skills_udf(df["text"]))
+    .withColumn("experience", calculate_experience_udf(df["text"]))
+    .withColumn("education", extract_education_udf(df["text"]))
+)
+
+# Write to analytics database
+processed_df.write.format("jdbc") \
+    .option("url", "jdbc:postgresql://db-host/nysm") \
+    .option("dbtable", "resume_analytics") \
+    .save()</pre>
                 </div>
                 
                 <div class="flex justify-end">
-                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">Close</button>
+                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript -->
+    <!-- Auth Service Modal -->
+    <div id="auth-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl font-bold text-auth">Auth Service</h3>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                
+                <div class="mb-6 p-4 bg-green-50 rounded-lg">
+                    <h4 class="font-bold mb-2">Tech Stack:</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tech-badge bg-green-100 text-green-800">Node.js</span>
+                        <span class="tech-badge bg-green-100 text-green-800">Express.js</span>
+                        <span class="tech-badge bg-green-100 text-green-800">JWT</span>
+                        <span class="tech-badge bg-green-100 text-green-800">OAuth 2.0</span>
+                        <span class="tech-badge bg-green-100 text-green-800">Redis</span>
+                    </div>
+                </div>
+                
+                <h4 class="font-bold mb-2">Implementation Details:</h4>
+                <p class="mb-4 text-gray-700">
+                    The authentication service handles user registration, login, and session management. It implements OAuth 2.0 and OpenID Connect for secure authentication and authorization.
+                </p>
+                
+                <div class="mb-6">
+                    <h4 class="font-bold mb-3">Key Features:</h4>
+                    <ul class="space-y-2 mb-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>JWT-based authentication with refresh tokens</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Social login (Google, LinkedIn, Microsoft)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Multi-factor authentication options</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Role-based access control (RBAC)</span>
+                        </li>
+                    </ul>
+                    
+                    <h5 class="font-bold text-primary mb-2">Security Implementation:</h5>
+                    <pre class="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
+// JWT token generation
+const generateToken = (user) => {
+    return jwt.sign(
+        {
+            userId: user._id,
+            role: user.role,
+            email: user.email
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: '1h',
+            issuer: 'nysm-auth-service'
+        }
+    );
+};
+
+// Token verification middleware
+const verifyToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'Access denied' });
+    
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        res.status(400).json({ error: 'Invalid token' });
+    }
+};</pre>
+                </div>
+                
+                <div class="flex justify-end">
+                    <button onclick="closeModal()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Modal functions
         function openModal(modalId) {
@@ -1634,15 +1649,6 @@
             });
         });
         
-        // Mobile menu functions
-        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        });
-        
-        function closeMobileMenu() {
-            document.getElementById('mobile-menu').classList.add('hidden');
-        }
-        
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1654,34 +1660,21 @@
                         top: target.offsetTop - 80,
                         behavior: 'smooth'
                     });
-                    
-                    closeMobileMenu();
                 }
             });
         });
         
-        // Highlight active section in navigation
-        window.addEventListener('scroll', function() {
-            const sections = document.querySelectorAll('section');
-            const navLinks = document.querySelectorAll('header nav a');
-            
-            let current = '';
-            
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                
-                if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
-                    current = section.getAttribute('id');
+        // Add animation to elements when they come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
                 }
             });
-            
-            navLinks.forEach(link => {
-                link.classList.remove('text-primary');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('text-primary');
-                }
-            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.tech-card').forEach(card => {
+            observer.observe(card);
         });
     </script>
 </body>
