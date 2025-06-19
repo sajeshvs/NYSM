@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud-Native Architecture Flow</title>
+    <title>Enhanced Cloud-Native Architecture Flow</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -22,6 +22,7 @@
                         vcv: '#EF4444',
                         ai: '#8B5CF6',
                         job: '#10B981',
+                        recommendation: '#34D399', // New color for Recommendation Service
                         data: '#64748B',
                         node: '#68A063',
                         python: '#3572A5',
@@ -29,13 +30,17 @@
                         postgres: '#336791'
                     },
                     animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'float': 'float 6s ease-in-out infinite'
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' }
+                        },
+                        fadeIn: {
+                            'from': { opacity: 0, transform: 'translateY(20px)' },
+                            'to': { opacity: 1, transform: 'translateY(0)' }
                         }
                     }
                 }
@@ -105,6 +110,11 @@
             background: #4F46E5;
             z-index: 1;
         }
+
+        .inter-service-connection {
+            position: absolute;
+            z-index: 1;
+        }
         
         .horizontal-connection {
             position: absolute;
@@ -162,10 +172,6 @@
             animation: fadeIn 0.6s ease forwards;
         }
         
-        .pulse {
-            animation: pulse-slow 4s infinite;
-        }
-        
         .nav-btn {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
@@ -194,19 +200,6 @@
             font-size: 24px;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .ai-tool-card {
-            background: linear-gradient(to bottom right, #F0F9FF, #E0F2FE);
-            border-radius: 12px;
-            padding: 15px;
-            margin: 10px 0;
-            border: 1px solid #DBEAFE;
-        }
-
         .ai-development-section {
             margin-top: 20px;
             padding: 15px;
@@ -268,7 +261,7 @@
         
         .diagram-container {
             position: relative;
-            min-height: 1000px; /* Adjust height based on content */
+            min-height: 1250px; /* Adjust height based on content */
         }
     </style>
 </head>
@@ -314,7 +307,7 @@
             
             <div class="architecture-container diagram-container">
                 <!-- User Layer -->
-                <div class="architecture-layer">
+                <div class="architecture-layer" style="position: absolute; top: 40px; left: 50%; transform: translateX(-50%);">
                     <div class="architecture-node bg-gray-600" onclick="openModal('user-modal')">
                         <i class="fas fa-user text-3xl mb-2"></i>
                         <div>End User</div>
@@ -322,11 +315,11 @@
                 </div>
                 
                 <!-- Connection: User to Frontend -->
-                <div class="connection" style="top: 150px; left: 50%; transform: translateX(-50%);"></div>
-                <div class="flow-arrow" style="top: 210px; left: 50%; transform: translateX(-50%);"></div>
+                <div class="connection" style="top: 115px; left: 50%; transform: translateX(-2px);"></div>
+                <div class="flow-arrow" style="top: 175px; left: 50%; transform: translateX(-10px);"></div>
                 
                 <!-- Frontend Layer -->
-                <div class="architecture-layer">
+                <div class="architecture-layer" style="position: absolute; top: 200px; left: 50%; transform: translateX(-50%);">
                     <div class="architecture-node bg-frontend" onclick="openModal('frontend-modal')">
                         <i class="fas fa-desktop text-3xl mb-2"></i>
                         <div>Frontend UI</div>
@@ -334,11 +327,11 @@
                 </div>
                 
                 <!-- Connection: Frontend to API Gateway -->
-                <div class="connection" style="top: 360px; left: 50%; transform: translateX(-50%);"></div>
-                <div class="flow-arrow" style="top: 420px; left: 50%; transform: translateX(-50%);"></div>
+                <div class="connection" style="top: 325px; left: 50%; transform: translateX(-2px);"></div>
+                <div class="flow-arrow" style="top: 385px; left: 50%; transform: translateX(-10px);"></div>
                 
                 <!-- API Gateway Layer -->
-                <div class="architecture-layer">
+                <div class="architecture-layer" style="position: absolute; top: 410px; left: 50%; transform: translateX(-50%);">
                     <div class="architecture-node bg-purple-600" onclick="openModal('gateway-modal')">
                         <i class="fas fa-network-wired text-3xl mb-2"></i>
                         <div>API Gateway</div>
@@ -346,13 +339,19 @@
                 </div>
                 
                 <!-- Connection: API Gateway to Microservices -->
-                <div class="horizontal-connection" style="top: 520px; left: 25%; width: 50%;"></div>
-                <div class="connection" style="top: 520px; left: 50%; transform: translateX(-50%); height: 80px;"></div>
-                <div class="flow-arrow" style="top: 590px; left: 50%; transform: translateX(-50%);"></div>
-
+                <div class="connection" style="top: 535px; left: 50%; transform: translateX(-2px); height: 40px;"></div>
+                <div class="horizontal-connection" style="top: 575px; left: 20%; width: 60%;"></div>
                 
-                <!-- Microservices Layer -->
-                <div class="architecture-layer flex-wrap gap-8" style="margin-top: 80px;">
+                <!-- Vertical connectors to microservices -->
+                <div class="connection" style="top: 577px; left: 25%; transform: translateX(-2px); height: 30px;"></div>
+                <div class="flow-arrow" style="top: 600px; left: 25%; transform: translateX(-10px);"></div>
+                <div class="connection" style="top: 577px; left: 50%; transform: translateX(-2px); height: 30px;"></div>
+                <div class="flow-arrow" style="top: 600px; left: 50%; transform: translateX(-10px);"></div>
+                <div class="connection" style="top: 577px; left: 75%; transform: translateX(-2px); height: 30px;"></div>
+                <div class="flow-arrow" style="top: 600px; left: 75%; transform: translateX(-10px);"></div>
+                
+                <!-- Microservices Layer 1 -->
+                <div class="architecture-layer flex-wrap gap-12" style="position: absolute; top: 620px; width: 100%; left: 0;">
                     <div class="architecture-node bg-auth" onclick="openModal('auth-modal')">
                         <i class="fas fa-user-lock text-3xl mb-2"></i>
                         <div>Auth Service</div>
@@ -368,25 +367,45 @@
                         <div>Video CV Service</div>
                     </div>
                 </div>
-                
-                <div class="architecture-layer flex-wrap gap-8" style="margin-top: 20px;">
+
+                <!-- Microservices Layer 2 -->
+                <div class="architecture-layer flex-wrap gap-12" style="position: absolute; top: 800px; width: 100%; left: 0;">
+                     <div class="architecture-node bg-job" onclick="openModal('job-modal')">
+                        <i class="fas fa-briefcase text-3xl mb-2"></i>
+                        <div>Job Service</div>
+                    </div>
+                    <!-- NEW Recommendation Service -->
+                    <div class="architecture-node bg-recommendation" onclick="openModal('recommendation-modal')">
+                        <i class="fas fa-thumbs-up text-3xl mb-2"></i>
+                        <div>Recommendation Service</div>
+                    </div>
                     <div class="architecture-node bg-ai" onclick="openModal('ai-modal')">
                         <i class="fas fa-robot text-3xl mb-2"></i>
                         <div>AI Engine</div>
                     </div>
-                    
-                    <div class="architecture-node bg-job" onclick="openModal('job-modal')">
-                        <i class="fas fa-briefcase text-3xl mb-2"></i>
-                        <div>Job Service</div>
-                    </div>
                 </div>
-                
+
+                <!-- CORRECTED Inter-service communication lines to AI Engine -->
+                <!-- VCV Service to AI Engine (Vertical) -->
+                <div class="inter-service-connection" style="left: calc(50% + 198px - 1px); top: 770px; height: 30px; border-left: 2px dashed #8B5CF6;"></div>
+                <div style="position: absolute; top: 800px; left: calc(50% + 198px - 6px); width: 12px; height: 12px; background-color: #8B5CF6; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 2;"></div>
+
+                <!-- Job & Reco Services to AI Engine (Horizontal) -->
+                <div class="inter-service-connection" style="left: calc(50% - 198px); top: 875px; width: 396px; border-top: 2px dashed #8B5CF6;"></div>
+                <div style="position: absolute; top: 871px; left: calc(50% + 198px); width: 12px; height: 12px; background-color: #8B5CF6; clip-path: polygon(100% 50%, 0 0, 0 100%); z-index: 2;"></div>
+
+                <!-- Profile Service to AI Engine (L-Shape) -->
+                <div class="inter-service-connection" style="left: 50%; top: 770px; height: 105px; border-left: 2px dashed #8B5CF6;"></div>
+                <div class="inter-service-connection" style="left: 50%; top: 875px; width: 198px; border-top: 2px dashed #8B5CF6;"></div>
+                <!-- Arrow is already present from the horizontal bus line above -->
+
                 <!-- Connection: Microservices to Data Layer -->
-                <div class="connection" style="top: 880px; left: 50%; transform: translateX(-50%); height: 100px;"></div>
-                <div class="flow-arrow" style="top: 980px; left: 50%; transform: translateX(-50%);"></div>
+                <div class="connection" style="top: 950px; left: 50%; transform: translateX(-2px); height: 80px;"></div>
+                <div class="horizontal-connection" style="top: 950px; left: 25%; width: 50%;"></div>
+                <div class="flow-arrow" style="top: 1025px; left: 50%; transform: translateX(-10px);"></div>
                 
                 <!-- Data Layer -->
-                <div class="architecture-layer">
+                <div class="architecture-layer" style="position: absolute; top: 1050px; left: 50%; transform: translateX(-50%);">
                     <div class="architecture-node bg-data" onclick="openModal('data-modal')">
                         <i class="fas fa-database text-3xl mb-2"></i>
                         <div>Data Layer</div>
@@ -402,7 +421,7 @@
             </div>
             
             <div class="mt-8 text-center text-gray-600">
-                <p>Visualization shows the flow of requests from users through the system to data storage</p>
+                <p>Visualization shows the flow of requests from users through the system to data storage, including inter-service communication.</p>
             </div>
         </section>
 
@@ -526,16 +545,18 @@
             </div>
             
             <div class="border-t border-blue-300 mt-8 pt-8 text-center text-blue-100">
-                <p>&copy; 2023 Cloud-Native Architecture Flow. All rights reserved.</p>
+                <p>&copy; 2024 Cloud-Native Architecture Flow. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <!-- MODALS SECTION -->
     
-    <!-- Architecture Component Modals -->
+    <!-- Existing Modals (User, Frontend, Gateway, Auth, Profile, VCV, AI, Job, Data, etc.) -->
+    <!-- All modals from the previous version are included here, unchanged -->
+     <!-- User Modal -->
     <div id="user-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center"><i class="fas fa-user text-gray-600 text-3xl mr-3"></i><h3 class="text-2xl font-bold text-gray-600">End User</h3></div>
@@ -557,8 +578,9 @@
         </div>
     </div>
 
+    <!-- Frontend Modal -->
     <div id="frontend-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
              <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center"><i class="fas fa-desktop text-frontend text-3xl mr-3"></i><h3 class="text-2xl font-bold text-frontend">Frontend UI</h3></div>
@@ -580,8 +602,9 @@
         </div>
     </div>
 
+    <!-- Gateway Modal -->
     <div id="gateway-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center"><i class="fas fa-network-wired text-purple-600 text-3xl mr-3"></i><h3 class="text-2xl font-bold text-purple-600">API Gateway</h3></div>
@@ -603,8 +626,9 @@
         </div>
     </div>
     
+    <!-- Auth Modal -->
     <div id="auth-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center"><i class="fas fa-user-lock text-auth text-3xl mr-3"></i><h3 class="text-2xl font-bold text-auth">Auth Service</h3></div>
@@ -626,8 +650,9 @@
         </div>
     </div>
 
+    <!-- Profile Modal -->
     <div id="profile-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center"><i class="fas fa-id-card text-profile text-3xl mr-3"></i><h3 class="text-2xl font-bold text-profile">Profile Service</h3></div>
@@ -649,8 +674,9 @@
         </div>
     </div>
     
+    <!-- VCV Modal -->
     <div id="vcv-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center"><i class="fas fa-video text-vcv text-3xl mr-3"></i><h3 class="text-2xl font-bold text-vcv">Video CV Service</h3></div>
@@ -672,8 +698,9 @@
         </div>
     </div>
     
+    <!-- AI Modal -->
     <div id="ai-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center"><i class="fas fa-robot text-ai text-3xl mr-3"></i><h3 class="text-2xl font-bold text-ai">AI Engine</h3></div>
@@ -695,8 +722,9 @@
         </div>
     </div>
     
+    <!-- Job Modal -->
     <div id="job-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center"><i class="fas fa-briefcase text-job text-3xl mr-3"></i><h3 class="text-2xl font-bold text-job">Job Service</h3></div>
@@ -718,8 +746,9 @@
         </div>
     </div>
     
+    <!-- Data Modal -->
     <div id="data-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center"><i class="fas fa-database text-data text-3xl mr-3"></i><h3 class="text-2xl font-bold text-data">Data Layer</h3></div>
@@ -741,11 +770,35 @@
         </div>
     </div>
 
+    <!-- NEW Recommendation Service Modal -->
+    <div id="recommendation-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center"><i class="fas fa-thumbs-up text-recommendation text-3xl mr-3"></i><h3 class="text-2xl font-bold text-recommendation">Recommendation Service</h3></div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-2xl"></i></button>
+                </div>
+                <div class="tech-detail-card">
+                    <h4 class="font-bold mb-2">How It Operates</h4>
+                    <p class="text-gray-700 mb-3">This microservice is the brain behind personalization. It consumes data from the Profile and Job services, communicates with the AI Engine to generate relevance scores, and ultimately produces personalized job recommendations for each user. It aims to deliver the right opportunity to the right candidate.</p>
+                    <h4 class="font-bold mb-2">Technology Used</h4>
+                    <p class="text-gray-700 mb-3">Built with <strong>Node.js</strong> and <strong>Express</strong>. It uses <strong>Redis</strong> for caching recommendations to ensure low-latency delivery. For asynchronous processing of recommendation models, it communicates with the AI Engine via a message bus like <strong>RabbitMQ</strong> or <strong>AWS SQS</strong>.</p>
+                </div>
+                <div class="ai-development-section">
+                    <h4 class="font-bold mb-3 text-primary">AI-Assisted Development</h4>
+                    <div class="ai-tip"><i class="fas fa-lightbulb"></i><div><strong>Algorithm Selection:</strong> AI assistants can suggest optimal recommendation algorithms (e.g., collaborative filtering, content-based) based on the available data and business goals.</div></div>
+                    <div class="ai-tip"><i class="fas fa-vial"></i><div><strong>A/B Testing Framework:</strong> Use AI tools to help generate the code for sophisticated A/B testing frameworks, allowing for empirical evaluation of different recommendation strategies to maximize user engagement.</div></div>
+                </div>
+                <div class="flex justify-end mt-4"><button onclick="closeModal()" class="bg-recommendation text-white px-4 py-2 rounded-lg hover:bg-green-500 transition">Close</button></div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Technology Modals -->
+
+    <!-- Technology Modals (React, Node, Python, etc.) -->
     <!-- React Modal -->
     <div id="react-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center">
@@ -822,7 +875,7 @@
     
     <!-- Node.js Modal -->
     <div id="node-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center">
@@ -914,7 +967,7 @@
     
     <!-- Python Modal -->
     <div id="python-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center">
@@ -1006,7 +1059,7 @@
     
     <!-- TensorFlow Modal -->
     <div id="tensorflow-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center">
@@ -1098,7 +1151,7 @@
     
     <!-- AWS Modal -->
     <div id="aws-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center">
@@ -1190,7 +1243,7 @@
     
     <!-- PostgreSQL Modal -->
     <div id="postgres-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl w-full max-w-3xl modal-content">
+        <div class="bg-white rounded-xl w-full max-w-3xl modal-content animate-fadeIn">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center">
@@ -1279,7 +1332,7 @@
             </div>
         </div>
     </div>
-
+    
     <script>
         // Modal functions
         function openModal(modalId) {
