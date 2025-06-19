@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Cloud-Native Architecture Flow</title>
+    <title>NYSM Platform Architecture</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -239,6 +239,37 @@
             margin-bottom: 10px;
         }
         
+        .service-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #2563eb, #0ea5e9);
+        }
+        
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .principle-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .principle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
 .diagram-container {
     position: relative;
     min-height: 150vh; /* Use viewport height for responsiveness */
@@ -284,7 +315,7 @@
                 <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center mr-3">
                     <i class="fas fa-project-diagram text-primary text-xl"></i>
                 </div>
-                <h1 class="text-2xl font-bold">Cloud-Native Architecture Flow</h1>
+                <h1 class="text-2xl font-bold">NYSM Platform Architecture</h1>
             </div>
             
             <nav class="flex space-x-2">
@@ -298,25 +329,112 @@
     <!-- Hero Section -->
     <section id="overview" class="bg-gradient-to-r from-primary to-secondary text-white py-16">
         <div class="container mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">Cloud-Native Architecture Flow</h1>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">NYSM Platform Architecture</h1>
             <div class="max-w-3xl mx-auto bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                <p class="text-lg mb-4">Visualizing the flow of requests through our cloud-native microservices architecture</p>
-                <p class="text-lg">Click on any component to see detailed information</p>
+                <p class="text-lg mb-4">Enhance your understanding of how each piece fits together in a single, seamless ecosystem. Below, you’ll see how requests flow—and how data, AI, and user interactions are orchestrated—to power everything from AI-guided video CV creation to real-time candidate matching and secure credential verification.</p>
+                <p class="text-lg">Click any module to dive into its role, technology choices, and AI-driven enhancements that make NYSM the next-gen recruitment platform.</p>
             </div>
         </div>
     </section>
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-12 max-w-7xl">
-        <!-- Architecture Flow Diagram -->
-        <section id="architecture" class="mb-20">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-4">Architecture Flow</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Clear visualization of request flow through microservices</p>
-                <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
+    <!-- NYSM Platform Architecture -->
+    <section id="platform" class="mb-20 bg-white rounded-2xl shadow-xl p-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">Platform Overview</h2>
+            <div class="w-20 h-1 bg-primary mx-auto rounded-full"></div>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">A modern, AI-driven recruitment platform built with cloud-native technologies</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100 text-center">
+                <div class="service-logo">
+                    <i class="fas fa-user-graduate text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Job Seeker Experience</h3>
+                <p class="text-gray-600 mb-4">AI-guided video CV creation with real-time feedback, personalized career coaching, and smart job matching based on skills and preferences.</p>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <span class="tech-badge bg-blue-100 text-blue-800">AI Analysis</span>
+                    <span class="tech-badge bg-blue-100 text-blue-800">Career Pathing</span>
+                    <span class="tech-badge bg-blue-100 text-blue-800">Profile Optimization</span>
+                </div>
             </div>
             
-            <div class="architecture-container">
+            <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100 text-center">
+                <div class="service-logo">
+                    <i class="fas fa-building text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Employer Portal</h3>
+                <p class="text-gray-600 mb-4">AI-powered candidate search, video assessment tools, collaborative hiring workflows, and analytics-driven recruitment insights.</p>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <span class="tech-badge bg-blue-100 text-blue-800">Smart Search</span>
+                    <span class="tech-badge bg-blue-100 text-blue-800">Team Collaboration</span>
+                    <span class="tech-badge bg-blue-100 text-blue-800">Analytics</span>
+                </div>
+            </div>
+            
+            <div class="tech-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100 text-center">
+                <div class="service-logo">
+                    <i class="fas fa-cogs text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Admin & Operations</h3>
+                <p class="text-gray-600 mb-4">Comprehensive platform management with real-time analytics, automated moderation, compliance tools, and system monitoring.</p>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <span class="tech-badge bg-blue-100 text-blue-800">Monitoring</span>
+                    <span class="tech-badge bg-blue-100 text-blue-800">Security</span>
+                    <span class="tech-badge bg-blue-100 text-blue-800">Automation</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-200">
+            <h3 class="text-2xl font-bold text-center mb-6 text-primary">Architecture Principles</h3>
+            <div class="principles-grid">
+                <div class="principle-card">
+                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-cubes text-primary text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Microservices</h4>
+                    <p class="text-gray-600">Independent, scalable services with well-defined APIs</p>
+                </div>
+                
+                <div class="principle-card">
+                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-cloud text-primary text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Cloud-Native</h4>
+                    <p class="text-gray-600">Designed for AWS with auto-scaling and resilience</p>
+                </div>
+                
+                <div class="principle-card">
+                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-lock text-primary text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Secure</h4>
+                    <p class="text-gray-600">Zero-trust architecture with end-to-end encryption</p>
+                </div>
+                
+                <div class="principle-card">
+                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-brain text-primary text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">AI-Powered</h4>
+                    <p class="text-gray-600">AI integration at every layer for intelligent features</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Flow Diagram -->
+    <section id="architecture" class="mb-20">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">Architecture Flow</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Clear visualization of request flow through microservices</p>
+            <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
+        </div>
+        
+        <div class="architecture-container">
                 <!-- SVG container for connectors -->
 <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
                     <!-- Arrow marker definitions -->
@@ -587,7 +705,7 @@
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-xl font-bold mb-4">Cloud-Native Flow</h3>
+                <h3 class="text-xl font-bold mb-4">NYSM Platform</h3>
                     <p class="text-blue-100">Visualizing microservices architecture flow</p>
                 </div>
                 
@@ -629,7 +747,7 @@
             </div>
             
             <div class="border-t border-blue-300 mt-8 pt-8 text-center text-blue-100">
-                <p>&copy; 2024 Cloud-Native Architecture Flow. All rights reserved.</p>
+                <p>&copy; 2024 NYSM Platform Architecture. All rights reserved.</p>
             </div>
         </div>
     </footer>
